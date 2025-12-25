@@ -28,10 +28,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         // not logged in
-                        .requestMatchers("/", "/auth/login", "/auth/register").permitAll().requestMatchers("/item/**").permitAll()
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/", "/auth/login", "/auth/register").permitAll().requestMatchers("/item/**").permitAll().requestMatchers("/error").permitAll()
                         // excluding technical files
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
 
                         // safety for admin panel
                         .requestMatchers("/admin/**").hasAnyAuthority("ROLE_admin")
@@ -63,8 +62,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
 }
