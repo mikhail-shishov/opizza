@@ -1,0 +1,58 @@
+package sk.ukf.opizza.service;
+
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import sk.ukf.opizza.dao.OrderRepository;
+import sk.ukf.opizza.entity.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class OrderServiceImpl implements OrderService {
+
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private CartService cartService;
+    @Autowired private AddressService addressService;
+
+    @Override
+    @Transactional
+    public Order createOrder(User user, String note, int addressId) {
+        Cart cart = cartService.getCartByUser(user);
+        Address address = addressService.getAddressById(addressId);
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setDeliveryAddress(address);
+        order.setNote(note);
+        order.setOrderTime(LocalDateTime.now());
+        order.setStatus("PENDING");
+        order.setTotalPrice(cartService.getTotalPrice(cart));
+
+        List<OrderItem> items = new ArrayList<>();
+        for (CartItem ci : cart.getItems()) {
+            OrderItem oi = new OrderItem();
+            oi.setOrder(order);
+            oi.setProductVariant(ci.getProductVariant());
+            oi.setQuantity(ci.getQuantity());
+            // SNAPSHOT: Uložíme aktuálnu cenu a meno
+            oi.setPriceAtOrder(ci.getProductVariant().getPrice());
+            oi.setProductNameAtOrder(ci.getProductVariant().getProduct().getName());
+            items.add(oi);
+        }
+        order.setOrderItems(items);
+
+        Order saved = orderRepository.save(order);
+        cartService.clearCart(user); // Po objednaní vymazať košík
+        return saved;
+    }
+
+    @Override public List<Order> getUserOrderHistory(User user) { return orderRepository.findAllByUserId(user.getId()); }
+    @Override public List<Order> getAllOrders() { return orderRepository.findAll(); }
+    @Override public void updateStatus(int id, String status) {
+        Order o = orderRepository.findById(id).orElseThrow();
+        o.setStatus(status);
+        orderRepository.save(o);
+    }
+}

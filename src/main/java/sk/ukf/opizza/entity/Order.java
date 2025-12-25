@@ -91,4 +91,8 @@ public class Order {
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
+
+    public void setUser(User user) {
+        
+    }
 }

@@ -143,5 +143,6 @@ public class User {
     }
 
     public Collection<Object> getRoles() {
+        return null;
     }
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:fragment="header">
+    <meta charset="UTF-8">
+    <title>Opizza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script th:src="@{/js/main.js}" defer></script>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <nav class="text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a th:href="@{/}" class="text-2xl font-bold"><i class="fa fa-pizza-slice"></i> Opizza</a>
+
+            <div class="flex items-center space-x-6">
+                <form th:action="@{/}" method="get" class="relative">
+                    <input type="text" name="search" placeholder="Hľadať pizzu"
+                           class="rounded-full px-4 py-1 w-64">
+                    <button type="submit" class="absolute right-3 top-1">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+
+                <a th:href="@{/cart}">
+                    <i class="fa fa-shopping-cart"></i> Košík
+                </a>
+
+                <div sec:authorize="isAnonymous()">
+                    <a th:href="@{/auth/login}">Prihlásiť</a>
+                </div>
+
+                <div sec:authorize="isAuthenticated()" class="flex items-center space-x-4">
+                    <span class="font-semibold" th:text="${#authentication.principal.firstName}">Meno</span>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="text-sm px-3 py-1 rounded-full">Odhlásiť</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <div th:replace="${content}"></div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p>2025 - <span th:text="${#temporals.format(localDate, 'yyyy')}"></span> &copy; Opizza</p>
+        </div>
+    </footer>
+
+</body>
+</html>

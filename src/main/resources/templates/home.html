@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+    <div th:fragment="content">
+
+        <h1 class="text-3xl font-bold mb-8 text-gray-800 text-center">Naša ponuka</h1>
+
+        <div class="flex justify-center space-x-4 mb-10">
+            <a th:href="@{/}" class="px-4 py-2 bg-white border rounded-full transition">Všetko</a>
+            <div th:each="cat : ${categories}">
+                <a th:href="@{/(category=${cat.id})}"
+                   class="px-4 py-2 bg-white border rounded-full transition"
+                   th:text="${cat.name}">Kategória</a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div th:each="pizza : ${pizzas}" class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                <img th:src="${pizza.imageUrl}" th:alt="${pizza.name}" class="h-48 w-full object-cover">
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-gray-900" th:text="${pizza.name}">Názov pizze</h3>
+                        <span th:each="tag : ${pizza.tags}" th:style="'background-color:' + ${tag.colorHex}" class="text-[10px] text-white px-2 py-1 rounded ml-1" th:text="${tag.name}">Tag</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-2" th:text="${pizza.description}">Popis...</p>
+
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-lg font-bold text-red-600">od 6.50 €</span>
+                        <a th:href="@{'/pizza/' + ${pizza.productId}}" class="bg-red-600 text-white px-4 py-2 rounded-lg transition">
+                            <i class="fa fa-eye"></i> Vybrať
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>
