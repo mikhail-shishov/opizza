@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, Integer> {
-    List<ProductVariant> findByProductId(int productId);
+    List<ProductVariant> findByProductProductId(int productId);
 }

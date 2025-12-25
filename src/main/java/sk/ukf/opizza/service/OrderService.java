@@ -7,6 +7,6 @@ import java.util.List;
 public interface OrderService {
     Order createOrder(User user, String note, int addressId);
     List<Order> getUserOrderHistory(User user);
-    List<Order> getAllOrders(); // Pre admina/kuchára
+    List<Order> getAllOrders();
     void updateStatus(int orderId, String status);
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.orderTime DESC")
-    List<Order> findAllByUserId(@Param("userId") int userId);
+    List<Order> findByUserIdOrderByOrderTimeDesc(int userId);
     List<Order> findByStatus(String status);
 
     @Query("SELECT o FROM Order o WHERE o.status = 'READY' OR o.status = 'DELIVERING'")

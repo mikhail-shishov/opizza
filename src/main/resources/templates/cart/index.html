@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8"><i class="fa fa-shopping-basket text-blue-600"></i> Váš nákupný košík</h1>
+
+        <div th:if="${cart.items.isEmpty()}" class="bg-white p-10 rounded-xl shadow text-center">
+            <i class="fa fa-shopping-cart text-64 text-gray-300 mb-4" style="font-size: 5rem;"></i>
+            <p class="text-xl text-gray-500">Váš košík je momentálne prázdny.</p>
+            <a th:href="@{/}" class="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Späť do menu</a>
+        </div>
+
+        <div th:if="${!cart.items.isEmpty()}" class="space-y-4">
+            <div th:each="item : ${cart.items}" class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img th:src="${item.productVariant.product.imageUrl}" class="w-16 h-16 rounded-lg object-cover">
+                    <div>
+                        <h3 class="font-bold text-lg" th:text="${item.productVariant.product.name}">Názov</h3>
+                        <p class="text-gray-500 text-sm" th:text="${item.productVariant.size.name}">Veľkosť</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-10">
+                    <div class="text-center">
+                        <p class="text-sm text-gray-400">Množstvo</p>
+                        <p class="font-semibold" th:text="${item.quantity} + ' ks'"></p>
+                    </div>
+                    <div class="text-right w-24">
+                        <p class="text-sm text-gray-400">Cena</p>
+                        <p class="font-bold text-blue-600" th:text="${item.productVariant.price * item.quantity} + ' €'"></p>
+                    </div>
+                    <form th:action="@{'/cart/remove/' + ${item.id}}" method="post">
+                        <button type="submit" class="text-gray-400 transition delete-btn">
+                            <i class="fa fa-trash-o fa-lg"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="bg-gray-100 p-6 rounded-xl flex justify-between items-center mt-8">
+                <span class="text-xl font-bold">Celková suma:</span>
+                <span class="text-3xl font-black text-blue-600" th:text="${totalPrice} + ' €'"></span>
+            </div>
+
+            <div class="flex justify-between mt-8">
+                <a th:href="@{/}" class="text-gray-600"><i class="fa fa-arrow-left"></i> Pokračovať v nákupe</a>
+                <a th:href="@{/orders/checkout}" class="bg-green-600 text-white px-10 py-3 rounded-xl font-bold hover:bg-green-700 shadow-lg"> Prejsť k objednávke <i class="fa fa-chevron-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

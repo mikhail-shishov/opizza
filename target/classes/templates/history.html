@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8"><i class="fa fa-history text-blue-600"></i> Moje objednávky</h1>
+
+        <div th:if="${orders.isEmpty()}" class="bg-white p-10 rounded-xl shadow text-center">
+            <p class="text-gray-500 italic">Zatiaľ ste neobjednali nič. Urobte prvý krok!</p>
+        </div>
+
+        <div class="space-y-6">
+            <div th:each="order : ${orders}"
+                 class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                <div class="bg-gray-50 px-6 py-4 flex justify-between items-center border-b">
+                    <div>
+                        <span class="text-sm text-gray-400">Objednávka č.</span>
+                        <span class="font-bold text-gray-700" th:text="${order.orderId}">1</span>
+                        <span class="mx-2 text-gray-300">|</span>
+                        <span class="text-sm text-gray-500" th:text="${#temporals.format(order.orderTime, 'dd.MM.yyyy HH:mm')}">Dátum</span>
+                    </div>
+                    <span th:classappend="${order.status == 'DELIVEblue' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}" class="px-3 py-1 rounded-full text-xs font-bold uppercase" th:text="${order.status}">STAV</span>
+                </div>
+
+                <div class="p-6">
+                    <ul class="divide-y divide-gray-100">
+                        <li th:each="item : ${order.orderItems}" class="py-3 flex justify-between">
+                            <span class="text-gray-700">
+                                <span class="font-bold" th:text="${item.quantity} + 'x'"></span>
+                                <span th:text="${item.productNameAtOrder}">Názov pizze</span>
+                            </span>
+                            <span class="font-semibold text-gray-900" th:text="${item.priceAtOrder * item.quantity} + ' €'">0.00 €</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="px-6 py-4 bg-blue-50 flex justify-between items-center">
+                    <div class="text-sm text-gray-600">
+                        <i class="fa fa-map-marker"></i> <span th:text="${order.deliveryAddress.street} + ' ' + ${order.deliveryAddress.house}">Adresa</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 mr-2">Celkom:</span>
+                        <span class="text-xl font-black text-blue-600" th:text="${order.totalPrice} + ' €'">0.00 €</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

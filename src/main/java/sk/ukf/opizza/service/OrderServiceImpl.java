@@ -36,7 +36,6 @@ public class OrderServiceImpl implements OrderService {
             oi.setOrder(order);
             oi.setProductVariant(ci.getProductVariant());
             oi.setQuantity(ci.getQuantity());
-            // SNAPSHOT: Uložíme aktuálnu cenu a meno
             oi.setPriceAtOrder(ci.getProductVariant().getPrice());
             oi.setProductNameAtOrder(ci.getProductVariant().getProduct().getName());
             items.add(oi);
@@ -44,11 +43,14 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(items);
 
         Order saved = orderRepository.save(order);
-        cartService.clearCart(user); // Po objednaní vymazať košík
+        cartService.clearCart(user);
         return saved;
     }
 
-    @Override public List<Order> getUserOrderHistory(User user) { return orderRepository.findAllByUserId(user.getId()); }
+    @Override
+    public List<Order> getUserOrderHistory(User user) {
+        return orderRepository.findByUserIdOrderByOrderTimeDesc(user.getId());
+    }
     @Override public List<Order> getAllOrders() { return orderRepository.findAll(); }
     @Override public void updateStatus(int id, String status) {
         Order o = orderRepository.findById(id).orElseThrow();

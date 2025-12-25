@@ -25,6 +25,10 @@ public class Order {
     @JoinColumn(name = "delivery_address_id")
     private Address deliveryAddress;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 
@@ -92,7 +96,7 @@ public class Order {
         this.orderItems = orderItems;
     }
 
-    public void setUser(User user) {
-        
-    }
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
 }
