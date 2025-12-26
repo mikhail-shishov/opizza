@@ -6,17 +6,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sk.ukf.opizza.dao.UserRepository;
 import sk.ukf.opizza.entity.User;
+import sk.ukf.opizza.service.EmailService;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @Override
@@ -64,5 +70,44 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Používateľ s emailom " + email + " neexistuje"));
+    }
+
+    @Override
+    @Transactional
+    public void resetPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void createPasswordResetToken(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Používateľ neexistuje"));
+
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        user.setTokenExpiry(LocalDateTime.now().plusMinutes(10));
+        userRepository.save(user);
+
+        String link = "http://localhost:8080/auth/reset-password?token=" + token;
+
+        emailService.sendEmail(email, "Reset hesla - Opizza", "Kliknite na nasledujúci odkaz pre zmenu hesla: " + link);
+    }
+
+    @Override
+    @Transactional
+    public void updatePasswordByToken(String token, String newPassword) {
+        User user = userRepository.findByResetToken(token).orElseThrow(() -> new RuntimeException("Neplatný alebo expirovaný odkaz"));
+
+        if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Odkaz vypršal, požiadajte o nový");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetToken(null);
+        user.setTokenExpiry(null);
+        userRepository.save(user);
     }
 }

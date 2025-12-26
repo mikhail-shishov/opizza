@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import sk.ukf.opizza.entity.User;
 import sk.ukf.opizza.service.UserService;
 import sk.ukf.opizza.service.EmailService;
@@ -18,9 +15,12 @@ public class AuthController {
 
     private final UserService userService;
 
+    private final EmailService emailService;
+
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService,  EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @GetMapping("/login")
@@ -51,5 +51,33 @@ public class AuthController {
     @GetMapping("/error")
     public String showErrorPage() {
         return "error";
+    }
+
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@RequestParam("email") String email) {
+        try {
+            userService.createPasswordResetToken(email);
+            return "redirect:/auth/login?sent";
+        } catch (Exception e) {
+            return "redirect:/auth/forgot-password?error";
+        }
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
+        // Tu by sa patrilo overiť v DB či token existuje, ale pre zobrazenie stačí poslať ho do Formu
+        model.addAttribute("token", token);
+        return "auth/reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public String handleResetPassword(@RequestParam("token") String token,
+                                      @RequestParam("newPassword") String newPassword) {
+        try {
+            userService.updatePasswordByToken(token, newPassword);
+            return "redirect:/auth/login?resetSuccess";
+        } catch (Exception e) {
+            return "redirect:/error?msg=NeplatnyToken";
+        }
     }
 }

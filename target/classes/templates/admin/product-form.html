@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800"
+            th:text="${product.productId == 0 ? 'Pridať nový produkt' : 'Upraviť produkt'}">Formulár</h1>
+
+        <form th:action="@{/admin/products/save}" th:object="${product}" method="post" class="space-y-6">
+            <input type="hidden" th:field="*{productId}">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Názov produktu</label>
+                    <input type="text" th:field="*{name}" requiblue
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Kategória</label>
+                    <select th:field="*{category}"
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">Pizza</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Popis (Zloženie)</label>
+                <textarea th:field="*{description}" rows="3"
+                          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">URL obrázka</label>
+                <input type="text" th:field="*{imageUrl}" placeholder="http://..."
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <label class="flex items-center cursor-pointer">
+                    <input type="checkbox" th:field="*{active}" class="w-5 h-5 text-blue-600 rounded">
+                    <span class="ml-2 text-gray-700 font-medium">Aktívny (zobraziť v menu)</span>
+                </label>
+            </div>
+
+            <div class="pt-6 border-t flex justify-end space-x-4">
+                <a th:href="@{/admin/products}" class="px-6 py-2 text-gray-600 hover:underline">Zrušiť</a>
+                <button type="submit"
+                        class="px-8 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md">
+                    <i class="fa fa-save mr-2"></i> Uložiť produkt
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</html>

@@ -23,6 +23,25 @@ public class User {
     private String role;
     private String avatarUrl;
 
+    private String resetToken;
+    private LocalDateTime tokenExpiry;
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getTokenExpiry() {
+        return tokenExpiry;
+    }
+
+    public void setTokenExpiry(LocalDateTime tokenExpiry) {
+        this.tokenExpiry = tokenExpiry;
+    }
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
