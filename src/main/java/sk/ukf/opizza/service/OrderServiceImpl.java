@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sk.ukf.opizza.dao.OrderRepository;
 import sk.ukf.opizza.entity.*;
+import sk.ukf.opizza.service.EmailService;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,14 @@ import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired private OrderRepository orderRepository;
-    @Autowired private CartService cartService;
-    @Autowired private AddressService addressService;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private CartService cartService;
+    @Autowired
+    private AddressService addressService;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     @Transactional
@@ -43,7 +50,11 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(items);
 
         Order saved = orderRepository.save(order);
+
+        emailService.sendEmail(user.getEmail(), "Potvrdenie objednávky č. " + saved.getOrderId(), "Vaša pizza je na ceste! Celková suma je " + saved.getTotalPrice() + " €");
+
         cartService.clearCart(user);
+
         return saved;
     }
 
@@ -51,8 +62,14 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getUserOrderHistory(User user) {
         return orderRepository.findByUserIdOrderByOrderTimeDesc(user.getId());
     }
-    @Override public List<Order> getAllOrders() { return orderRepository.findAll(); }
-    @Override public void updateStatus(int id, String status) {
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public void updateStatus(int id, String status) {
         Order o = orderRepository.findById(id).orElseThrow();
         o.setStatus(status);
         orderRepository.save(o);

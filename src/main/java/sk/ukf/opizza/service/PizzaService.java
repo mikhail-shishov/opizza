@@ -9,5 +9,5 @@ public interface PizzaService {
     List<Product> getPizzasByCategory(int categoryId);
     Product getPizzaById(int id);
     void savePizza(Product pizza);
-    void softDeletePizza(int id); // Bezpečné mazanie
+    void softDeletePizza(int id);
 }

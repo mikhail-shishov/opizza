@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+    <div class="max-w-2xl mx-auto mt-12 p-10 bg-white rounded-3xl shadow-2xl border border-gray-100 text-center">
+
+        <h1 class="text-8xl font-black text-gray-100 leading-none" th:text="${status}">500</h1>
+        <h2 class="text-3xl font-bold text-gray-800 mt-2 mb-6" th:text="${error}">Internal Server Error</h2>
+
+        <div class="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-200 inline-block text-left w-full">
+            <div class="flex items-start space-x-3">
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <code class="text-blue-600 font-bold" th:text="${status}">CODE</code>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Detailná správa</p>
+                    <p class="text-gray-700 font-medium" th:text="${message}">Tu sa zobrazí systémový popis chyby.</p>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-400 font-mono italic">
+                Path: <span th:text="${path}">/unknown-url</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a th:href="@{/}"
+               class="px-8 py-3 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
+                <i class="fa fa-home mr-2"></i> Späť na domov
+            </a>
+            <button onclick="window.history.back()"
+                    class="px-8 py-3 bg-gray-100 text-gray-700 rounded-full font-bold hover:bg-gray-200 transition">
+                <i class="fa fa-arrow-left mr-2"></i> Vrátiť sa späť
+            </button>
+        </div>
+    </div>
+</div>
+</html>

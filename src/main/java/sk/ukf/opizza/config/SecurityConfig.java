@@ -32,6 +32,8 @@ public class SecurityConfig {
                         // excluding technical files
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
 
+                        .requestMatchers("/error").permitAll()
+
                         // safety for admin panel
                         .requestMatchers("/admin/**").hasAnyAuthority("ROLE_admin")
 

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl border border-gray-100 mt-10">
+        <h2 class="text-2xl font-bold text-center mb-6 text-blue-600">Registrácia</h2>
+
+        <form th:action="@{/auth/register}" th:object="${user}" method="post" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Meno</label>
+                    <input type="text" th:field="*{firstName}" requiblue
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Priezvisko</label>
+                    <input type="text" th:field="*{lastName}" requiblue
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <input type="email" th:field="*{email}" requiblue
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-blue-500 text-xs mt-1"></p>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Telefón</label>
+                <input type="text" th:field="*{phone}" placeholder="Medzinarodný format, t.j. +421..."
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Heslo</label>
+                <input type="password" th:field="*{password}" requiblue
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition shadow-lg">
+                Vytvoriť účet
+            </button>
+        </form>
+
+        <p class="mt-6 text-center text-gray-600 text-sm">
+            Už máte účet? <a th:href="@{/auth/login}" class="text-blue-600 font-bold hover:underline">Prihláste sa</a>
+        </p>
+    </div>
+</div>
+</html>

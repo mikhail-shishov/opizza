@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Správa menu</h1>
+        <a th:href="@{/admin/products/add}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <i class="fa fa-plus"></i> Nová pizza
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+        <div th:each="p : ${products}" class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <img th:src="${p.imageUrl}" class="w-12 h-12 rounded object-cover">
+                <div>
+                    <h3 class="font-bold" th:text="${p.name}">Názov</h3>
+                    <p class="text-xs text-gray-400" th:text="${p.category.name}">Kategória</p>
+                </div>
+            </div>
+            <div class="flex space-x-4">
+                <form th:action="@{'/admin/products/delete/' + ${p.productId}}" method="post">
+                    <button type="submit" class="text-blue-500 hover:text-blue-700 delete-btn">
+                        <i class="fa fa-trash"></i> Odstrániť
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

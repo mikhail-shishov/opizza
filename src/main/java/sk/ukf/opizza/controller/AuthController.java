@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import sk.ukf.opizza.entity.User;
 import sk.ukf.opizza.service.UserService;
+import sk.ukf.opizza.service.EmailService;
 
 @Controller
 @RequestMapping("/auth")
@@ -37,6 +38,9 @@ public class AuthController {
     public String createUser(@ModelAttribute("user") User user, BindingResult bindingResult) {
         try {
             userService.saveUser(user);
+
+            emailService.sendEmail(user.getEmail(), "Vitajte v Opizza!", "Dobrý deň " + user.getFirstName() + ",\n\n" + "Vaša registrácia v aplikácii Opizza prebehla úspešne. " + "Teraz sa môžete prihlásiť a objednať si pizzu.\n\n" + "Tím Opizza");
+
             return "redirect:/auth/login?register";
         } catch (IllegalArgumentException e) {
             bindingResult.rejectValue("email", "email.exists", e.getMessage());
