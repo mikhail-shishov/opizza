@@ -18,7 +18,7 @@ public class AuthController {
     private final EmailService emailService;
 
     @Autowired
-    public AuthController(UserService userService,  EmailService emailService) {
+    public AuthController(UserService userService, EmailService emailService) {
         this.userService = userService;
         this.emailService = emailService;
     }
@@ -35,15 +35,20 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String createUser(@ModelAttribute("user") User user, BindingResult bindingResult) {
+    public String createUser(@ModelAttribute("user") User user, BindingResult bindingResult, jakarta.servlet.http.HttpServletRequest request) {
         try {
+            String plainPassword = user.getPassword();
             userService.saveUser(user);
 
             emailService.sendEmail(user.getEmail(), "Vitajte v Opizza!", "Dobrý deň " + user.getFirstName() + ",\n\n" + "Vaša registrácia v aplikácii Opizza prebehla úspešne. " + "Teraz sa môžete prihlásiť a objednať si pizzu.\n\n" + "Tím Opizza");
 
-            return "redirect:/auth/login?register";
-        } catch (IllegalArgumentException e) {
-            bindingResult.rejectValue("email", "email.exists", e.getMessage());
+            request.login(user.getEmail(), plainPassword);
+
+            return "redirect:/";
+        } catch (Exception e) {
+            if (e instanceof IllegalArgumentException) {
+                bindingResult.rejectValue("email", "email.exists", e.getMessage());
+            }
             return "auth/register";
         }
     }
@@ -53,26 +58,31 @@ public class AuthController {
         return "error";
     }
 
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordForm() {
+        return "auth/forgot-password";
+    }
+
     @PostMapping("/forgot-password")
     public String processForgotPassword(@RequestParam("email") String email) {
         try {
+            String cleanEmail = email.trim();
             userService.createPasswordResetToken(email);
             return "redirect:/auth/login?sent";
         } catch (Exception e) {
+            e.printStackTrace();
             return "redirect:/auth/forgot-password?error";
         }
     }
 
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
-        // Tu by sa patrilo overiť v DB či token existuje, ale pre zobrazenie stačí poslať ho do Formu
         model.addAttribute("token", token);
         return "auth/reset-password";
     }
 
     @PostMapping("/reset-password")
-    public String handleResetPassword(@RequestParam("token") String token,
-                                      @RequestParam("newPassword") String newPassword) {
+    public String handleResetPassword(@RequestParam("token") String token, @RequestParam("newPassword") String newPassword) {
         try {
             userService.updatePasswordByToken(token, newPassword);
             return "redirect:/auth/login?resetSuccess";

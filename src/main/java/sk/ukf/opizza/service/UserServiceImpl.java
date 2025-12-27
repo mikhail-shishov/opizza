@@ -69,13 +69,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Používateľ s emailom " + email + " neexistuje"));
+        return userRepository.findByEmail(email.trim()).orElseThrow(() -> new RuntimeException("Používateľ s emailom " + email + " neexistuje"));
     }
 
     @Override
     @Transactional
     public void resetPassword(String email, String newPassword) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
+        User user = userRepository.findByEmail(email.trim()).orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void createPasswordResetToken(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Používateľ neexistuje"));
+        User user = userRepository.findByEmail(email.trim()).orElseThrow(() -> new RuntimeException("Používateľ neexistuje"));
 
         String token = UUID.randomUUID().toString();
         user.setResetToken(token);

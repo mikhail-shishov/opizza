@@ -28,7 +28,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         // not logged in
-                        .requestMatchers("/", "/auth/login", "/auth/register").permitAll().requestMatchers("/item/**").permitAll().requestMatchers("/error").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/auth/login",
+                                "/auth/register",
+                                "/item/**",
+                                "/error",
+                                "/auth/forgot-password",
+                                "/auth/reset-password"
+                        ).permitAll()
                         // excluding technical files
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
 
@@ -44,12 +52,17 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 // login form config
                 .formLogin(formLogin -> formLogin.loginPage("/auth/login") // thymeleaf template here
-                        .loginProcessingUrl("/log-in") // send POST data here
+                        .loginProcessingUrl("/log-in-post") // send POST data here!
                         .defaultSuccessUrl("/", true) // when login success
                         .failureUrl("/auth/login?error=true") // when login with error
                         .permitAll())
                 // logout config
-                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/auth/login?logout=true").permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll())
                 // error check
                 .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage("/auth/error") // 403
                         .authenticationEntryPoint((request, response, authException) -> {
