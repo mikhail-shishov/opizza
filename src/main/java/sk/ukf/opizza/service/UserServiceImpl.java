@@ -54,6 +54,10 @@ public class UserServiceImpl implements UserService {
         existing.setPhone(incoming.getPhone());
         existing.setAvatarUrl(incoming.getAvatarUrl());
 
+        if (incoming.getPassword() != null && !incoming.getPassword().isEmpty()) {
+            existing.setPassword(passwordEncoder.encode(incoming.getPassword()));
+        }
+
         // if default address is changed
         if (incoming.getDefaultAddress() != null) {
             existing.setDefaultAddress(incoming.getDefaultAddress());

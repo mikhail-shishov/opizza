@@ -40,7 +40,12 @@ public class AuthController {
             String plainPassword = user.getPassword();
             userService.saveUser(user);
 
-            emailService.sendEmail(user.getEmail(), "Vitajte v Opizza!", "Dobrý deň " + user.getFirstName() + ",\n\n" + "Vaša registrácia v aplikácii Opizza prebehla úspešne. " + "Teraz sa môžete prihlásiť a objednať si pizzu.\n\n" + "Tím Opizza");
+            try {
+                emailService.sendEmail(user.getEmail(), "Vitajte v Opizza!", "Dobrý deň " + user.getFirstName() + ",\n\n" + "Vaša registrácia v aplikácii Opizza prebehla úspešne. " + "Teraz sa môžete prihlásiť a objednať si pizzu.\n\n" + "Tím Opizza");
+            } catch(Exception e) {
+                System.err.println("Chyba na strane email-servisu " + e.getMessage());
+            }
+
 
             request.login(user.getEmail(), plainPassword);
 
