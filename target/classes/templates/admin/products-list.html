@@ -14,7 +14,7 @@
                 <img th:src="${p.imageUrl}" class="w-12 h-12 rounded object-cover">
                 <div>
                     <h3 class="font-bold" th:text="${p.name}">Názov</h3>
-                    <p class="text-xs text-gray-400" th:text="${p.category.name}">Kategória</p>
+                    <p class="text-xs text-gray-400" th:text="${p.category?.name}">Kategória</p>
                 </div>
             </div>
             <div class="flex space-x-4">

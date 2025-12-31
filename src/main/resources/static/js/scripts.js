@@ -7,4 +7,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    function addImageRow() {
+        const list = document.getElementById('image-list');
+        const index = list.children.length;
+        const newRow = document.createElement('div');
+        newRow.className = "flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200";
+        newRow.innerHTML = `
+            <input type="text" name="imageUrls" placeholder="URL adresa obrázka" class="flex-grow px-3 py-2 border rounded-md">
+            <label class="flex items-center gap-2 whitespace-nowrap text-sm">
+                <input type="radio" name="mainImageIndex" value="${index}"> Hlavný
+            </label>
+            <button type="button" onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700">
+                <i class="fa fa-trash"></i>
+            </button>
+        `;
+        list.appendChild(newRow);
+    }
 });
