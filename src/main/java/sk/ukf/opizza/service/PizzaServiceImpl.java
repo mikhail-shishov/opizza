@@ -38,7 +38,7 @@ public class PizzaServiceImpl implements PizzaService {
     @Override
     public void softDeletePizza(int id) {
         Product pizza = getPizzaById(id);
-        pizza.setActive(false); // soft delete
+        pizza.setAvailable(false); // soft delete
         productRepository.save(pizza);
     }
 
