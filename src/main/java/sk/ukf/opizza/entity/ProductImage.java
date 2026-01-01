@@ -10,6 +10,8 @@ public class ProductImage {
     private int id;
 
     private String url;
+
+    @Column(name = "is_main")
     private boolean isMain;
 
     @ManyToOne

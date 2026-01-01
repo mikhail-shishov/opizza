@@ -15,9 +15,11 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div th:each="pizza : ${pizzas}" class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
-            <img th:src="${pizza.images.?[isMain].size() > 0 ? pizza.images.?[isMain][0].url : '/img/pizza_pictures/funghi.webp'}"
-                 class="w-full h-48 object-cover rounded-t-xl"
-                 alt="Pizza">
+            <div th:with="mainImg=${pizza.images != null ? pizza.images.stream().filter(i -> i.isMain).findFirst().orElse(null) : null}">
+                <img th:src="${mainImg != null ? mainImg.url : (pizza.images != null and !pizza.images.empty ? pizza.images[0].url : '/img/pizza_pictures/funghi.webp')}"
+                     class="w-full h-48 object-cover rounded-t-xl"
+                     alt="Pizza">
+            </div>
             <div class="p-4">
                 <div class="flex justify-between items-start mb-2">
                     <h3 class="text-xl font-bold text-gray-900" th:text="${pizza.name}">Názov pizze</h3>
