@@ -51,6 +51,18 @@ public class Product {
     )
     private List<Tag> tags;
 
+    public String getMainImageUrl() {
+        if (images == null || images.isEmpty()) {
+//            TODO placeholder
+            return "/img/pizza_pictures/funghi.webp";
+        }
+        return images.stream()
+                .filter(ProductImage::isMain)
+                .map(ProductImage::getUrl)
+                .findFirst()
+                .orElse(images.get(0).getUrl());
+    }
+
     public int getProductId() {
         return productId;
     }

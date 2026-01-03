@@ -30,6 +30,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div th:each="pizza : ${pizzas}" class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
             <div th:with="mainImages=${pizza.images != null ? pizza.images.?[isMain] : null}">
+<!--                TODO placeholder-->
                 <img th:src="${mainImages != null and !mainImages.empty ? mainImages[0].url : (pizza.images != null and !pizza.images.empty ? pizza.images[0].url : '/img/pizza_pictures/funghi.webp')}"
                      class="w-full h-48 object-cover rounded-t-xl"
                      alt="pizza">

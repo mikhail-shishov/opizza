@@ -41,7 +41,6 @@ public class AdminController {
         return "redirect:/admin/orders";
     }
 
-    // --- PRODUKTY ---
     @GetMapping("/products")
     public String listProducts(Model model) {
         model.addAttribute("products", pizzaService.getAllActivePizzas());
@@ -86,5 +85,13 @@ public class AdminController {
     public String deleteCategory(@PathVariable int id) {
         categoryService.deleteCategory(id);
         return "redirect:/admin/categories";
+    }
+
+    @GetMapping("/products/edit/{id}")
+    public String showEditProductForm(@PathVariable("id") int id, Model model) {
+        Product product = pizzaService.getPizzaById(id);
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "admin/product-form";
     }
 }
