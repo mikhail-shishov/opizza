@@ -15,10 +15,10 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div th:each="pizza : ${pizzas}" class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
-            <div th:with="mainImg=${pizza.images != null ? pizza.images.stream().filter(i -> i.isMain).findFirst().orElse(null) : null}">
-                <img th:src="${mainImg != null ? mainImg.url : (pizza.images != null and !pizza.images.empty ? pizza.images[0].url : '/img/pizza_pictures/funghi.webp')}"
+            <div th:with="mainImages=${pizza.images != null ? pizza.images.?[isMain] : null}">
+                <img th:src="${mainImages != null and !mainImages.empty ? mainImages[0].url : (pizza.images != null and !pizza.images.empty ? pizza.images[0].url : '/img/pizza_pictures/funghi.webp')}"
                      class="w-full h-48 object-cover rounded-t-xl"
-                     alt="Pizza">
+                     alt="pizza">
             </div>
             <div class="p-4">
                 <div class="flex justify-between items-start mb-2">
@@ -32,7 +32,7 @@
                     <span class="text-lg font-bold text-red-600">od 6.50 €</span>
                     <a th:href="@{'/pizza/' + ${pizza.productId}}"
                        class="bg-red-600 text-white px-4 py-2 rounded-lg transition">
-                        <i class="fa fa-eye"></i> Vybrať
+                        Vybrať
                     </a>
                 </div>
             </div>
