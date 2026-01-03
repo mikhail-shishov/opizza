@@ -53,8 +53,7 @@ public class Product {
 
     public String getMainImageUrl() {
         if (images == null || images.isEmpty()) {
-//            TODO placeholder
-            return "/img/pizza_pictures/funghi.webp";
+            return "/img/pizza_pictures/placeholder.webp";
         }
         return images.stream()
                 .filter(ProductImage::isMain)
