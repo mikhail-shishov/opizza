@@ -2,14 +2,28 @@
 <html th:replace="~{layout :: layout(~{::content})}">
 <div th:fragment="content">
 
-    <h1 class="text-3xl font-bold mb-8 text-gray-800 text-center">Naša ponuka</h1>
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Naša ponuka</h1>
 
     <div class="flex justify-center space-x-4 mb-10">
-        <a th:href="@{/}" class="px-4 py-2 bg-white border rounded-full transition">Všetko</a>
+<!--        <a th:href="@{/}" class="px-4 py-2 bg-white border rounded-full transition">Všetko</a>-->
         <div th:each="cat : ${categories}">
             <a th:href="@{/(category=${cat.id})}"
                class="px-4 py-2 bg-white border rounded-full transition"
                th:text="${cat.name}">Kategória</a>
+        </div>
+    </div>
+
+    <div th:if="${pizzas.empty}" class="text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+        <div class="text-5xl mb-4">🍕</div>
+        <h2 class="text-2xl font-bold text-gray-700">Prepáčte, nemáme túto položku</h2>
+        <p class="text-gray-500 mt-2">Skúste zadať iný názov alebo si pozrite celú našu ponuku.</p>
+        <a th:href="@{/}" class="inline-block mt-6 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+            Zobraziť celé menu
+        </a>
+    </div>
+
+    <div th:if="${!pizzas.empty}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div th:each="pizza : ${pizzas}" class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
         </div>
     </div>
 
@@ -32,7 +46,7 @@
                     <span class="text-lg font-bold text-red-600">od 6.50 €</span>
                     <a th:href="@{'/pizza/' + ${pizza.productId}}"
                        class="bg-red-600 text-white px-4 py-2 rounded-lg transition">
-                        <i class="fa fa-eye"></i> Vybrať
+                        Vybrať
                     </a>
                 </div>
             </div>

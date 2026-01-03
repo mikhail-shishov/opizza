@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.ico}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:src="@{/css/style.css}">
     <script th:src="@{/js/scripts.js}" defer></script>
 </head>
 
@@ -29,7 +30,7 @@
 
             <form th:action="@{/}" method="get" class="relative">
                 <input type="text" name="search" placeholder="Hľadať pizzu"
-                       class="rounded-full px-4 py-1 w-64 border border-gray-300">
+                       class="rounded-full px-4 py-1 w-64 border border-gray-300 focus:outline-none focus:border-blue-500">
                 <button type="submit" class="absolute right-3 top-1">
                     <i class="fa fa-search text-blue-600"></i>
                 </button>
