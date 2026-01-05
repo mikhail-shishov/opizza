@@ -43,3 +43,42 @@ function addImageRow() {
         `;
     list.appendChild(newRow);
 }
+
+function editCategory(id, name) {
+    const idField = document.getElementById('catId');
+    const nameField = document.getElementById('catName');
+    const submitBtn = document.getElementById('catSubmitBtn');
+    const cancelBtn = document.getElementById('catCancelBtn');
+
+    if (idField && nameField) {
+        idField.value = id;
+        nameField.value = name;
+        if (submitBtn) submitBtn.innerText = 'Uložiť zmeny';
+        if (cancelBtn) cancelBtn.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function resetCatForm() {
+    document.getElementById('catId').value = '';
+    document.getElementById('catName').value = '';
+    document.getElementById('catSubmitBtn').innerText = 'Pridať';
+    document.getElementById('catCancelBtn').classList.add('hidden');
+}
+
+function editTag(id, name, color) {
+    document.getElementById('tagId').value = id;
+    document.getElementById('tagName').value = name;
+    document.getElementById('tagColor').value = color;
+    document.getElementById('tagSubmitBtn').innerText = 'Uložiť zmeny';
+    document.getElementById('tagCancelBtn').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetTagForm() {
+    document.getElementById('tagId').value = '';
+    document.getElementById('tagName').value = '';
+    document.getElementById('tagColor').value = '#808080';
+    document.getElementById('tagSubmitBtn').innerText = 'Pridať';
+    document.getElementById('tagCancelBtn').classList.add('hidden');
+}

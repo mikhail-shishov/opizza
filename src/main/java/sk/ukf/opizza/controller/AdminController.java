@@ -82,8 +82,8 @@ public class AdminController {
     }
 
     @PostMapping("/categories/save")
-    public String saveCategory(@RequestParam String name) {
-        Category cat = new Category();
+    public String saveCategory(@RequestParam(required = false) Integer id, @RequestParam String name) {
+        Category cat = (id != null) ? categoryService.getCategoryById(id) : new Category();
         cat.setName(name);
         categoryService.saveCategory(cat);
         return "redirect:/admin/categories";
@@ -102,10 +102,10 @@ public class AdminController {
     }
 
     @PostMapping("/tags/save")
-    public String saveTag(@RequestParam String name, @RequestParam(required = false) String colorHex) {
-        Tag tag = new Tag();
+    public String saveTag(@RequestParam(required = false) Integer id, @RequestParam String name, @RequestParam(required = false) String colorHex) {
+        Tag tag = (id != null) ? tagService.getTagById(id) : new Tag();
         tag.setName(name);
-        tag.setColorHex(colorHex != null ? colorHex : "#808080"); // Default grey
+        tag.setColorHex(colorHex != null ? colorHex : "#808080");
         tagService.saveTag(tag);
         return "redirect:/admin/tags";
     }
@@ -127,15 +127,6 @@ public class AdminController {
     private String generateSlug(String name) {
         if (name == null || name.isEmpty()) return "";
 
-        return name.toLowerCase()
-                .replace('ľ', 'l').replace('š', 's').replace('č', 'c')
-                .replace('ť', 't').replace('ž', 'z').replace('ý', 'y')
-                .replace('á', 'a').replace('í', 'i').replace('é', 'e')
-                .replace('ď', 'd').replace('ň', 'n').replace('ó', 'o')
-                .replace('ô', 'o').replace('ŕ', 'r').replace('ĺ', 'l')
-                .replaceAll("[^a-z0-9\\s]", "")
-                .replaceAll("\\s+", "-")
-                .replaceAll("-+", "-")
-                .trim();
+        return name.toLowerCase().replace('ľ', 'l').replace('š', 's').replace('č', 'c').replace('ť', 't').replace('ž', 'z').replace('ý', 'y').replace('á', 'a').replace('í', 'i').replace('é', 'e').replace('ď', 'd').replace('ň', 'n').replace('ó', 'o').replace('ô', 'o').replace('ŕ', 'r').replace('ĺ', 'l').replaceAll("[^a-z0-9\\s]", "").replaceAll("\\s+", "-").replaceAll("-+", "-").trim();
     }
 }

@@ -2,9 +2,9 @@
 <html th:replace="~{layout :: layout(~{::content})}">
 <div th:fragment="content">
 
-    <h1 class="text-3xl font-bold text-gray-800">Naša ponuka</h1>
+    <h1 class="text-3xl font-bold text-gray-800 mb-10">Naša ponuka</h1>
 
-    <div class="flex justify-center space-x-4 mb-10">
+    <div class="flex space-x-4 mb-10">
 <!--        <a th:href="@{/}" class="px-4 py-2 bg-white border rounded-full transition">Všetko</a>-->
         <div th:each="cat : ${categories}">
             <a th:href="@{/(category=${cat.id})}"
