@@ -29,10 +29,17 @@ public class ProfileController {
     }
 
     @PostMapping("/update")
-    public String updateProfile(@ModelAttribute("user") User updatedUser, @AuthenticationPrincipal UserPrincipal principal) {
-        updatedUser.setId(principal.getUser().getId());
+    public String updateProfile(@ModelAttribute("user") User formUser, @AuthenticationPrincipal UserPrincipal principal) {
+        User existingUser = userService.getUserById(principal.getUser().getId());
 
-        userService.saveUser(updatedUser);
+        existingUser.setFirstName(formUser.getFirstName());
+        existingUser.setLastName(formUser.getLastName());
+        existingUser.setPhone(formUser.getPhone());
+
+        if (formUser.getPassword() != null && !formUser.getPassword().trim().isEmpty()) {
+            existingUser.setPassword(formUser.getPassword());
+        }
+        userService.saveUser(existingUser);
 
         return "redirect:/profile?success";
     }
