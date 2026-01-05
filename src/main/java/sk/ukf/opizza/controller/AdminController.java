@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import sk.ukf.opizza.entity.Order;
 import sk.ukf.opizza.entity.Product;
 import sk.ukf.opizza.entity.Category;
+import sk.ukf.opizza.entity.Tag;
 import sk.ukf.opizza.service.OrderService;
 import sk.ukf.opizza.service.PizzaService;
 import sk.ukf.opizza.service.CategoryService; // Potrebný import
+import sk.ukf.opizza.service.TagService;
 
 import java.util.List;
 
@@ -20,15 +22,16 @@ public class AdminController {
     private final OrderService orderService;
     private final PizzaService pizzaService;
     private final CategoryService categoryService;
+    private final TagService tagService;
 
     @Autowired
-    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService) {
+    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService, TagService tagService) {
         this.orderService = orderService;
         this.pizzaService = pizzaService;
         this.categoryService = categoryService;
+        this.tagService = tagService;
     }
 
-    // --- OBJEDNÁVKY ---
     @GetMapping("/orders")
     public String viewAllOrders(Model model) {
         model.addAttribute("orders", orderService.getAllOrders());
@@ -51,6 +54,7 @@ public class AdminController {
     public String showAddProductForm(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("allTags", tagService.getAllTags());
         return "admin/product-form";
     }
 
@@ -91,6 +95,27 @@ public class AdminController {
         return "redirect:/admin/categories";
     }
 
+    @GetMapping("/tags")
+    public String listTags(Model model) {
+        model.addAttribute("tags", tagService.getAllTags());
+        return "admin/tags";
+    }
+
+    @PostMapping("/tags/save")
+    public String saveTag(@RequestParam String name, @RequestParam(required = false) String colorHex) {
+        Tag tag = new Tag();
+        tag.setName(name);
+        tag.setColorHex(colorHex != null ? colorHex : "#808080"); // Default grey
+        tagService.saveTag(tag);
+        return "redirect:/admin/tags";
+    }
+
+    @PostMapping("/tags/delete/{id}")
+    public String deleteTag(@PathVariable int id) {
+        tagService.deleteTag(id);
+        return "redirect:/admin/tags";
+    }
+
     @GetMapping("/products/edit/{id}")
     public String showEditProductForm(@PathVariable("id") int id, Model model) {
         Product product = pizzaService.getPizzaById(id);
@@ -108,9 +133,9 @@ public class AdminController {
                 .replace('á', 'a').replace('í', 'i').replace('é', 'e')
                 .replace('ď', 'd').replace('ň', 'n').replace('ó', 'o')
                 .replace('ô', 'o').replace('ŕ', 'r').replace('ĺ', 'l')
-                .replaceAll("[^a-z0-9\\s]", "") // Odstráni špeciálne znaky
-                .replaceAll("\\s+", "-")        // Nahradí medzery pomlčkou
-                .replaceAll("-+", "-")          // Odstráni duplicitné pomlčky
+                .replaceAll("[^a-z0-9\\s]", "")
+                .replaceAll("\\s+", "-")
+                .replaceAll("-+", "-")
                 .trim();
     }
 }

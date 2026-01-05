@@ -20,10 +20,16 @@
         <div class="flex items-center space-x-6">
             <div sec:authorize="hasRole('admin')" class="flex items-center space-x-4 border-r pr-4 border-gray-200">
                 <a th:href="@{/admin/orders}" class="text-gray-600 hover:text-blue-600 font-medium">
-                    <i class="fa fa-list-alt"></i> Objednávky
+                    Objednávky
                 </a>
                 <a th:href="@{/admin/products}" class="text-gray-600 hover:text-blue-600 font-medium">
-                    <i class="fa fa-cutlery"></i> Menu
+                    Menu
+                </a>
+                <a th:href="@{/admin/categories}" class="text-gray-600 hover:text-blue-600 font-medium">
+                    Kategorii
+                </a>
+                <a th:href="@{/admin/tags}" class="text-gray-600 hover:text-blue-600 font-medium">
+                    Tagy
                 </a>
             </div>
 
