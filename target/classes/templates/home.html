@@ -5,7 +5,7 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-10">Naša ponuka</h1>
 
     <div class="flex space-x-4 mb-10">
-<!--        <a th:href="@{/}" class="px-4 py-2 bg-white border rounded-full transition">Všetko</a>-->
+        <!--        <a th:href="@{/}" class="px-4 py-2 bg-white border rounded-full transition">Všetko</a>-->
         <div th:each="cat : ${categories}">
             <a th:href="@{/(category=${cat.id})}"
                class="px-4 py-2 bg-white border rounded-full transition"
@@ -17,7 +17,8 @@
         <div class="text-5xl mb-4">🍕</div>
         <h2 class="text-2xl font-bold text-gray-700">Prepáčte, nemáme túto položku :(</h2>
         <p class="text-gray-500 mt-2">Skúste zadať iný názov alebo si pozrite celú našu ponuku.</p>
-        <a th:href="@{/}" class="inline-block mt-6 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+        <a th:href="@{/}"
+           class="inline-block mt-6 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
             Zobraziť celé menu
         </a>
     </div>
@@ -43,7 +44,12 @@
                 <p class="text-gray-600 text-sm mb-4 line-clamp-2" th:text="${pizza.description}">Popis...</p>
 
                 <div class="flex justify-between items-center mt-4">
-                    <span class="text-lg font-bold text-red-600">od 6.50 €</span>
+                    <span class="text-lg font-bold text-red-600">
+                        <span th:if="${pizza.getMinPriceFormatted() != '-'}"
+                              th:text="'od ' + ${pizza.getMinPriceFormatted()}">od 6.50 €</span>
+                        <span th:if="${pizza.getMinPriceFormatted() == '-'}" th:text="'-'">-</span>
+                    </span>
+
                     <a th:href="@{'/pizza/' + ${pizza.slug}}"
                        class="bg-red-600 text-white px-4 py-2 rounded-lg transition">
                         Vybrať

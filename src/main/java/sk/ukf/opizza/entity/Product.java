@@ -39,38 +39,43 @@ public class Product {
         this.slug = slug;
     }
 
+    public Double getPriceForSize(int sizeId) {
+        if (variants == null) return null;
+        return variants.stream().filter(v -> v.getSize().getId() == sizeId).map(ProductVariant::getPrice).findFirst().orElse(null);
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductVariant> variants;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ProductVariant> variants = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "product_ingredients",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
-    )
+    @JoinTable(name = "product_ingredients", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
     private List<Ingredient> ingredients;
 
     @ManyToMany
-    @JoinTable(
-            name = "product_tags",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+    @JoinTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
 
     public String getMainImageUrl() {
         if (images == null || images.isEmpty()) {
             return "/img/pizza_pictures/placeholder.webp";
         }
-        return images.stream()
-                .filter(ProductImage::isMain)
-                .map(ProductImage::getUrl)
-                .findFirst()
-                .orElse(images.get(0).getUrl());
+        return images.stream().filter(ProductImage::isMain).map(ProductImage::getUrl).findFirst().orElse(images.get(0).getUrl());
+    }
+
+    public String getMinPriceFormatted() {
+        if (variants == null || variants.isEmpty()) {
+            return "-";
+        }
+        double minPrice = variants.stream()
+                .mapToDouble(ProductVariant::getPrice)
+                .min()
+                .orElse(0.0);
+
+        return String.format("%.2f €", minPrice);
     }
 
     public int getProductId() {

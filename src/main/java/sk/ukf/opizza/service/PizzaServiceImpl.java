@@ -4,8 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sk.ukf.opizza.dao.ProductRepository;
-import sk.ukf.opizza.entity.Product;
-import sk.ukf.opizza.entity.ProductImage;
+import sk.ukf.opizza.dao.ProductVariantRepository;
+import sk.ukf.opizza.dao.SizeRepository;
+import sk.ukf.opizza.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,17 +17,20 @@ public class PizzaServiceImpl implements PizzaService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductVariantRepository variantRepository;
+
+    @Autowired
+    private SizeRepository sizeRepository;
+
     @Override
     public List<Product> getAllActivePizzas() {
         return productRepository.findByIsAvailableTrue();
     }
 
-    //    TODO check compliance with task
     @Override
     public List<Product> searchPizzas(String query) {
-        if (query == null || query.trim().isEmpty()) {
-            return getAllActivePizzas();
-        }
+        if (query == null || query.trim().isEmpty()) return getAllActivePizzas();
         return productRepository.searchByName(query);
     }
 
@@ -43,7 +47,7 @@ public class PizzaServiceImpl implements PizzaService {
     @Override
     public void softDeletePizza(int id) {
         Product pizza = getPizzaById(id);
-        pizza.setAvailable(false); // soft delete
+        pizza.setAvailable(false);
         productRepository.save(pizza);
     }
 
@@ -55,6 +59,11 @@ public class PizzaServiceImpl implements PizzaService {
     @Override
     @Transactional
     public void savePizzaWithImages(Product product, List<String> imageUrls, int mainIndex) {
+    }
+
+    @Override
+    @Transactional
+    public void saveProductFull(Product product, List<String> imageUrls, int mainIndex, List<Integer> sizeIds, List<Double> prices) {
         Product savedProduct = productRepository.save(product);
 
         if (savedProduct.getImages() == null) {
@@ -72,6 +81,20 @@ public class PizzaServiceImpl implements PizzaService {
                     img.setProduct(savedProduct);
                     img.setMain(i == mainIndex);
                     savedProduct.getImages().add(img);
+                }
+            }
+        }
+
+        variantRepository.deleteByProductProductId(savedProduct.getProductId());
+
+        if (sizeIds != null && prices != null) {
+            for (int i = 0; i < sizeIds.size(); i++) {
+                if (i < prices.size() && prices.get(i) != null && prices.get(i) > 0) {
+                    ProductVariant v = new ProductVariant();
+                    v.setProduct(savedProduct);
+                    v.setPrice(prices.get(i));
+                    v.setSize(sizeRepository.findById(sizeIds.get(i)).orElse(null));
+                    variantRepository.save(v);
                 }
             }
         }

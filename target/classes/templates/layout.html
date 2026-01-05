@@ -19,11 +19,12 @@
         </a>
 
         <div class="hidden lg:flex items-center space-x-6">
-            <div sec:authorize="hasRole('admin')" class="flex items-center space-x-4 border-r pr-4 border-gray-200">
-                <a th:href="@{/admin/orders}" class="text-gray-600 hover:text-blue-600 font-medium">Objednávky</a>
-                <a th:href="@{/admin/products}" class="text-gray-600 hover:text-blue-600 font-medium">Menu</a>
-                <a th:href="@{/admin/categories}" class="text-gray-600 hover:text-blue-600 font-medium">Kategórie</a>
-                <a th:href="@{/admin/tags}" class="text-gray-600 hover:text-blue-600 font-medium">Tagy</a>
+            <div sec:authorize="hasRole('admin')" class="flex items-center space-x-2 border-r pr-2 border-gray-200">
+                <a th:href="@{/admin/orders}" class="text-gray-600 hover:text-blue-600 font-small">Objednávky</a>
+                <a th:href="@{/admin/products}" class="text-gray-600 hover:text-blue-600 font-small">Menu</a>
+                <a th:href="@{/admin/categories}" class="text-gray-600 hover:text-blue-600 font-small">Kategórie</a>
+                <a th:href="@{/admin/tags}" class="text-gray-600 hover:text-blue-600 font-small">Tagy</a>
+                <a th:href="@{/admin/sizes}" class="text-gray-600 font-small">Velkosti</a>
             </div>
 
             <form th:action="@{/}" method="get" class="relative">
@@ -57,10 +58,11 @@
     <div id="mobile-menu" class="hidden lg:hidden bg-gray-50 border-t border-gray-200 px-4 py-4 space-y-4 text-center">
         <div sec:authorize="hasRole('admin')" class="flex flex-col space-y-2 border-b pb-4">
             <span class="text-xs font-bold text-gray-400 uppercase">Administrácia</span>
-            <a th:href="@{/admin/orders}" class="text-gray-600 font-medium">Objednávky</a>
-            <a th:href="@{/admin/products}" class="text-gray-600 font-medium">Menu</a>
-            <a th:href="@{/admin/categories}" class="text-gray-600 font-medium">Kategórie</a>
-            <a th:href="@{/admin/tags}" class="text-gray-600 font-medium">Tagy</a>
+            <a th:href="@{/admin/orders}" class="text-gray-600 font-small">Objednávky</a>
+            <a th:href="@{/admin/products}" class="text-gray-600 font-small">Menu</a>
+            <a th:href="@{/admin/categories}" class="text-gray-600 font-small">Kategórie</a>
+            <a th:href="@{/admin/tags}" class="text-gray-600 font-small">Tagy</a>
+            <a th:href="@{/admin/sizes}" class="text-gray-600 font-small">Velkosti</a>
         </div>
 
         <form th:action="@{/}" method="get" class="relative">

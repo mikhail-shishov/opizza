@@ -24,13 +24,42 @@
             </div>
 
             <div class="mb-4">
-                <label class="block font-bold mb-2">Tagy:</label>
-                <div class="flex flex-wrap gap-4">
-                    <div th:each="tag : ${allTags}">
+                <label class="block text-sm font-bold text-gray-700 mb-2">Tagy:</label>
+                <div class="flex flex-wrap gap-4 bg-gray-50 p-3 rounded-lg border">
+                    <div th:each="tag : ${allTags}" class="flex items-center">
                         <input type="checkbox" th:field="*{tags}" th:value="${tag.id}" class="mr-1">
-                        <span th:text="${tag.name}">Tag</span>
+                        <span th:text="${tag.name}" class="text-sm">Tag</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold text-gray-700 mb-2">Varianty a ceny:</label>
+                <div class="bg-white border rounded-lg overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="p-3">Veľkosť</th>
+                            <th class="p-3">Cena (€)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="size : ${allSizes}" class="border-b last:border-0">
+                            <td class="p-3 font-medium">
+                                <span th:text="${size.name}">Large</span>
+                                <input type="hidden" name="sizeIds" th:value="${size.id}">
+                            </td>
+                            <td class="p-3">
+                                <input type="number" step="0.01" name="prices"
+                                       th:value="${product.productId != 0 ? product.getPriceForSize(size.id) : ''}"
+                                       placeholder="napr. 7.50"
+                                       class="w-32 px-3 py-1 border rounded focus:ring-1 focus:ring-blue-500 outline-none">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Ponechajte prázdne, ak tento rozmer neponúkate.</p>
             </div>
 
             <div>
@@ -46,10 +75,18 @@
             </div>
 
             <div>
-                <label class="block text-sm font-bold text-gray-700">Obrázky produktu</label>
-
+                <label class="block text-sm font-bold text-gray-700 mb-2">Obrázky produktu</label>
                 <div id="image-list" class="space-y-3">
-                    <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div th:each="img, stat : ${product.images}" class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <input type="text" name="imageUrls" th:value="${img.url}" placeholder="URL adresa obrázka"
+                               class="flex-grow px-3 py-2 border rounded-md">
+                        <label class="flex items-center gap-2 whitespace-nowrap text-sm">
+                            <input type="radio" name="mainImageIndex" th:value="${stat.index}" th:checked="${img.main}"> Hlavný
+                        </label>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-red-500"><i class="fa fa-trash"></i></button>
+                    </div>
+
+                    <div th:if="${product.productId == 0}" class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
                         <input type="text" name="imageUrls" placeholder="URL adresa obrázka"
                                class="flex-grow px-3 py-2 border rounded-md">
                         <label class="flex items-center gap-2 whitespace-nowrap text-sm">
@@ -59,12 +96,12 @@
                 </div>
 
                 <button type="button" onclick="addImageRow()"
-                        class="text-sm text-blue-600 font-semibold flex items-center gap-1 hover:text-blue-800">
+                        class="mt-2 text-sm text-blue-600 font-semibold flex items-center gap-1 hover:text-blue-800">
                     <i class="fa fa-plus-circle"></i> Pridat ďalšiu URL
                 </button>
             </div>
 
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-4 pt-4">
                 <label class="flex items-center cursor-pointer">
                     <input type="checkbox" th:field="*{available}" class="w-5 h-5 text-blue-600 rounded">
                     <span class="ml-2 text-gray-700 font-medium">Aktívny (zobraziť v menu)</span>
@@ -82,5 +119,6 @@
     </div>
 </div>
 <script th:inline="javascript">
-    window.isProductNew = /*[[${product != null ? product.productId == 0 : false}]]*/ false;</script>
+    window.isProductNew = /*[[${product != null ? product.productId == 0 : false}]]*/ false;
+</script>
 </html>

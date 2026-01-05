@@ -13,5 +13,7 @@ public interface PizzaService {
 
     void savePizzaWithImages(Product product, List<String> imageUrls, int mainIndex);
 
+    void saveProductFull(Product product, List<String> imageUrls, int mainIndex, List<Integer> sizeIds, List<Double> prices);
+
     Product getPizzaBySlug(String slug);
 }

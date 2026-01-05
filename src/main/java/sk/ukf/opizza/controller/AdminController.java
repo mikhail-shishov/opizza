@@ -4,14 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import sk.ukf.opizza.entity.Order;
-import sk.ukf.opizza.entity.Product;
-import sk.ukf.opizza.entity.Category;
-import sk.ukf.opizza.entity.Tag;
+import sk.ukf.opizza.entity.*;
 import sk.ukf.opizza.service.OrderService;
 import sk.ukf.opizza.service.PizzaService;
-import sk.ukf.opizza.service.CategoryService; // Potrebný import
+import sk.ukf.opizza.service.CategoryService;
 import sk.ukf.opizza.service.TagService;
+import sk.ukf.opizza.service.SizeService;
 
 import java.util.List;
 
@@ -23,13 +21,15 @@ public class AdminController {
     private final PizzaService pizzaService;
     private final CategoryService categoryService;
     private final TagService tagService;
+    private final SizeService sizeService;
 
     @Autowired
-    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService, TagService tagService) {
+    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService, TagService tagService, SizeService sizeService) {
         this.orderService = orderService;
         this.pizzaService = pizzaService;
         this.categoryService = categoryService;
         this.tagService = tagService;
+        this.sizeService = sizeService;
     }
 
     @GetMapping("/orders")
@@ -55,17 +55,25 @@ public class AdminController {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("allTags", tagService.getAllTags());
+        model.addAttribute("allSizes", sizeService.getAllSizes());
         return "admin/product-form";
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(@ModelAttribute("product") Product product, @RequestParam(value = "imageUrls", required = false) List<String> imageUrls, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex) {
+    public String saveProduct(@ModelAttribute("product") Product product,
+                              @RequestParam(value = "imageUrls", required = false) List<String> imageUrls,
+                              @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex,
+                              @RequestParam(value = "sizeIds", required = false) List<Integer> sizeIds,
+                              @RequestParam(value = "prices", required = false) List<Double> prices) {
+
         if (product.getSlug() == null || product.getSlug().trim().isEmpty()) {
             product.setSlug(generateSlug(product.getName()));
         } else {
             product.setSlug(generateSlug(product.getSlug()));
         }
-        pizzaService.savePizzaWithImages(product, imageUrls, mainIndex);
+
+        pizzaService.saveProductFull(product, imageUrls, mainIndex, sizeIds, prices);
+
         return "redirect:/admin/products";
     }
 
@@ -122,7 +130,25 @@ public class AdminController {
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("allTags", tagService.getAllTags());
+        model.addAttribute("allSizes", sizeService.getAllSizes());
         return "admin/product-form";
+    }
+
+    @GetMapping("/sizes")
+    public String listSizes(Model model) {
+        model.addAttribute("sizes", sizeService.getAllSizes());
+        return "admin/sizes"; // We will create this HTML file next
+    }
+
+    @PostMapping("/sizes/save")
+    public String saveSize(@RequestParam(required = false) Integer id,
+                           @RequestParam String name,
+                           @RequestParam int weightGrams) {
+        Size size = (id != null) ? sizeService.getSizeById(id) : new Size();
+        size.setName(name);
+        size.setWeightGrams(weightGrams);
+        sizeService.saveSize(size);
+        return "redirect:/admin/sizes";
     }
 
     private String generateSlug(String name) {

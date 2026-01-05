@@ -32,7 +32,6 @@ public class CartController {
         return "cart/index";
     }
 
-    // Pridanie pizze (variantu) do košíka
     @PostMapping("/add")
     public String addToCart(@RequestParam("variantId") int variantId, @RequestParam("quantity") int quantity, Authentication authentication) {
         User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
@@ -40,7 +39,6 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // Odstránenie položky z košíka
     @PostMapping("/remove/{itemId}")
     public String removeFromCart(@PathVariable("itemId") int itemId) {
         cartService.removeItemFromCart(itemId);

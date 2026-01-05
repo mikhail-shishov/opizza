@@ -81,3 +81,23 @@ function resetTagForm() {
     document.getElementById('tagSubmitBtn').innerText = 'Pridať';
     document.getElementById('tagCancelBtn').classList.add('hidden');
 }
+
+function editSize(id, name, weight) {
+    document.getElementById('sizeId').value = id;
+    document.getElementById('sizeName').value = name;
+    document.getElementById('sizeWeight').value = weight;
+
+    document.getElementById('sizeSubmitBtn').innerText = 'Aktualizovať';
+    document.getElementById('sizeCancelBtn').classList.remove('hidden');
+
+    document.getElementById('sizeForm').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetSizeForm() {
+    document.getElementById('sizeId').value = '';
+    document.getElementById('sizeName').value = '';
+    document.getElementById('sizeWeight').value = '';
+
+    document.getElementById('sizeSubmitBtn').innerText = 'Uložiť';
+    document.getElementById('sizeCancelBtn').classList.add('hidden');
+}
