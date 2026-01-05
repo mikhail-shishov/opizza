@@ -10,6 +10,7 @@ public class Address {
     @Column(name = "addresses_id")
     private int id;
 
+//    TODO stricter validation
     private String city;
     private String zipCode;
     private String street;

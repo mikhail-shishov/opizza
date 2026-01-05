@@ -56,7 +56,11 @@ public class AdminController {
 
     @PostMapping("/products/save")
     public String saveProduct(@ModelAttribute("product") Product product, @RequestParam(value = "imageUrls", required = false) List<String> imageUrls, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex) {
-
+        if (product.getSlug() == null || product.getSlug().trim().isEmpty()) {
+            product.setSlug(generateSlug(product.getName()));
+        } else {
+            product.setSlug(generateSlug(product.getSlug()));
+        }
         pizzaService.savePizzaWithImages(product, imageUrls, mainIndex);
         return "redirect:/admin/products";
     }
@@ -93,5 +97,20 @@ public class AdminController {
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.getAllCategories());
         return "admin/product-form";
+    }
+
+    private String generateSlug(String name) {
+        if (name == null || name.isEmpty()) return "";
+
+        return name.toLowerCase()
+                .replace('ľ', 'l').replace('š', 's').replace('č', 'c')
+                .replace('ť', 't').replace('ž', 'z').replace('ý', 'y')
+                .replace('á', 'a').replace('í', 'i').replace('é', 'e')
+                .replace('ď', 'd').replace('ň', 'n').replace('ó', 'o')
+                .replace('ô', 'o').replace('ŕ', 'r').replace('ĺ', 'l')
+                .replaceAll("[^a-z0-9\\s]", "") // Odstráni špeciálne znaky
+                .replaceAll("\\s+", "-")        // Nahradí medzery pomlčkou
+                .replaceAll("-+", "-")          // Odstráni duplicitné pomlčky
+                .trim();
     }
 }

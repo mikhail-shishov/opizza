@@ -47,9 +47,14 @@ public class PizzaController {
         return "home";
     }
 
-    @GetMapping("/pizza/{id}")
-    public String viewPizzaDetail(@PathVariable("id") int id, Model model) {
-        Product pizza = pizzaService.getPizzaById(id);
+    @GetMapping("/pizza/{slug}")
+    public String viewPizzaDetail(@PathVariable("slug") String slug, Model model) {
+        Product pizza = pizzaService.getPizzaBySlug(slug);
+
+        if (pizza == null) {
+            return "redirect:/";
+        }
+
         model.addAttribute("pizza", pizza);
         return "detail";
     }

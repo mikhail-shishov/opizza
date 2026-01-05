@@ -1,37 +1,45 @@
 <!DOCTYPE html>
 <html th:replace="~{layout :: layout(~{::content})}">
-    <div th:fragment="content">
-        <div class="rounded-2xl shadow-lg p-8 flex flex-col md:flex-row gap-10">
-            <div class="md:w-1/2">
-                <img th:src="${pizza.imageUrl}" class="rounded-xl w-full shadow-lg">
-            </div>
+<div th:fragment="content">
+    <div class="rounded-2xl shadow-lg p-8 flex flex-col md:flex-row gap-10">
+        <div class="md:w-1/2">
+            <img th:src="${pizza.mainImageUrl}" class="rounded-xl w-full shadow-lg">
+        </div>
 
-            <div class="md:w-1/2">
-                <h1 class="text-4xl font-bold mb-4" th:text="${pizza.name}">Názov pizze</h1>
-                <p class="text-gray-600 mb-6 text-lg" th:text="${pizza.description}">Popis...</p>
+        <div class="md:w-1/2">
+            <h1 class="text-4xl font-bold mb-4" th:text="${pizza.name}">Názov pizze</h1>
+            <p class="text-gray-600 mb-6 text-lg" th:text="${pizza.description}">Popis...</p>
 
-                <form th:action="@{/cart/add}" method="post" class="space-y-6">
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-2 text-lg">Vyberte si veľkosť:</label>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div th:each="variant : ${pizza.variants}" class="border rounded-lg p-4 flex justify-between items-center transition cursor-pointer">
-                                <label class="flex items-center w-full" cursor-pointer>
-                                    <input type="radio" name="variantId" th:value="${variant.variantId}" required class="mr-3">
-                                    <span th:text="${variant.size.name}">Veľkosť</span>
-                                    <span class="ml-auto font-bold" th:text="${variant.price} + ' €'">0.00 €</span>
-                                </label>
-                            </div>
+            <form th:action="@{/cart/add}" method="post" class="space-y-6">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2 text-lg">Vyberte si veľkosť:</label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div th:each="variant : ${pizza.variants}"
+                             class="border rounded-lg p-4 flex justify-between items-center transition hover:bg-blue-50">
+                            <input type="radio" name="variantId"
+                                   th:id="'variant-' + ${variant.variantId}"
+                                   th:value="${variant.variantId}"
+                                   required class="mr-3">
+
+                            <label th:for="'variant-' + ${variant.variantId}"
+                                   class="flex justify-between items-center w-full cursor-pointer">
+                                <span th:text="${variant.size.name}" class="font-medium">Veľkosť</span>
+                                <span class="font-bold text-blue-600" th:text="${variant.price} + ' €'">0.00 €</span>
+                            </label>
                         </div>
                     </div>
+                </div>
 
-                    <div class="flex items-center space-x-4">
-                        <input type="number" name="quantity" value="1" min="1" class="w-20 border rounded-lg p-2 text-center text-lg">
-                        <button type="submit" class="flex-grow bg-blue-600 text-white py-3 rounded-lg font-bold text-lg transition">
-                            <i class="fa fa-cart-plus mr-2"></i> Pridať do košíka
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="flex items-center space-x-4">
+                    <input type="number" name="quantity" value="1" min="1"
+                           class="w-20 border rounded-lg p-2 text-center text-lg">
+                    <button type="submit"
+                            class="flex-grow bg-blue-600 text-white py-3 rounded-lg font-bold text-lg transition">
+                        <i class="fa fa-cart-plus mr-2"></i> Pridať do košíka
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 </html>

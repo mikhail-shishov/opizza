@@ -12,4 +12,6 @@ public interface PizzaService {
     void softDeletePizza(int id);
 
     void savePizzaWithImages(Product product, List<String> imageUrls, int mainIndex);
+
+    Product getPizzaBySlug(String slug);
 }

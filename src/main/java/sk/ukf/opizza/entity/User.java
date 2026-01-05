@@ -18,6 +18,7 @@ public class User {
     @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
 
+    //    TODO stricter validation - only complex PW should be accepted, validation errors should be visible for user
     private String password;
     private String firstName;
     private String lastName;

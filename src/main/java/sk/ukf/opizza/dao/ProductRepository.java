@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import sk.ukf.opizza.entity.Product;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
@@ -14,7 +15,14 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     List<Product> findByIsAvailableTrue();
 
+    long countByCategoryId(int categoryId);
+
     List<Product> findByCategoryId(int categoryId);
+
+    Optional<Product> findBySlug(String slug);
+
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.variants v LEFT JOIN FETCH v.size WHERE p.slug = :slug")
+    Optional<Product> findBySlugWithVariants(@Param("slug") String slug);
 
     @Query("SELECT p FROM Product p JOIN p.tags t WHERE t.id = :tagId")
     List<Product> findByTagId(@Param("tagId") int tagId);

@@ -21,6 +21,7 @@ public class PizzaServiceImpl implements PizzaService {
         return productRepository.findByIsAvailableTrue();
     }
 
+    //    TODO check compliance with task
     @Override
     public List<Product> searchPizzas(String query) {
         if (query == null || query.trim().isEmpty()) {
@@ -76,5 +77,10 @@ public class PizzaServiceImpl implements PizzaService {
         }
 
         productRepository.save(savedProduct);
+    }
+
+    @Override
+    public Product getPizzaBySlug(String slug) {
+        return productRepository.findBySlugWithVariants(slug).orElse(null);
     }
 }
