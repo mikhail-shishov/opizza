@@ -25,7 +25,7 @@ public class ProfileController {
     public String showProfile(@AuthenticationPrincipal UserPrincipal principal, Model model) {
         User currentUser = userService.getUserById(principal.getUser().getId());
         model.addAttribute("user", currentUser);
-        return "Index";
+        return "profile/index";
     }
 
     @PostMapping("/update")
@@ -61,7 +61,7 @@ public class ProfileController {
 
         address.setUser(user);
 
-        if (user.getAllAddresses().isEmpty()) {
+        if (user.getDefaultAddress() == null) {
             address.setDefault(true);
             user.setDefaultAddress(address);
         }
