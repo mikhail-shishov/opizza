@@ -121,6 +121,7 @@ public class AdminController {
         Product product = pizzaService.getPizzaById(id);
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("allTags", tagService.getAllTags());
         return "admin/product-form";
     }
 
