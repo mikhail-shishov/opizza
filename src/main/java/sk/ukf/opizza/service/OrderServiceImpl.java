@@ -49,14 +49,22 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setOrderItems(items);
 
+        List<OrderStatusHistory> historyList = new ArrayList<>();
+        OrderStatusHistory initialHistory = new OrderStatusHistory();
+        initialHistory.setOrder(order);
+        initialHistory.setStatus("PENDING");
+        initialHistory.setChangedAt(LocalDateTime.now());
+        historyList.add(initialHistory);
+        order.setStatusHistory(historyList);
+
         Order saved = orderRepository.save(order);
 
-        emailService.sendEmail(user.getEmail(), "Potvrdenie objednávky č. " + saved.getOrderId(), "Vaša pizza je na ceste! Celková suma je " + saved.getTotalPrice() + " €");
+        emailService.sendEmail(user.getEmail(), "Potvrdenie objednávky č. " + saved.getOrderId(), "Vaša objednavka bola prijatá! Celková suma je " + saved.getTotalPrice() + " €");
 
         cartService.clearCart(user);
-
         return saved;
     }
+
 
     @Override
     public List<Order> getUserOrderHistory(User user) {
@@ -69,9 +77,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void updateStatus(int id, String status) {
         Order o = orderRepository.findById(id).orElseThrow();
         o.setStatus(status);
+
+        OrderStatusHistory newEntry = new OrderStatusHistory();
+        newEntry.setOrder(o);
+        newEntry.setStatus(status);
+        newEntry.setChangedAt(LocalDateTime.now());
+
+        if (o.getStatusHistory() == null) o.setStatusHistory(new ArrayList<>());
+        o.getStatusHistory().add(newEntry);
+
         orderRepository.save(o);
     }
 }

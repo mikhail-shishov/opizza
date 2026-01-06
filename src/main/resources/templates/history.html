@@ -18,7 +18,7 @@
                         <span class="mx-2 text-gray-300">|</span>
                         <span class="text-sm text-gray-500" th:text="${#temporals.format(order.orderTime, 'dd.MM.yyyy HH:mm')}">Dátum</span>
                     </div>
-                    <span th:classappend="${order.status == 'DELIVEblue' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}" class="px-3 py-1 rounded-full text-xs font-bold uppercase" th:text="${order.status}">STAV</span>
+                    <span th:classappend="${order.status == 'DELIVERED' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}" class="px-3 py-1 rounded-full text-xs font-bold uppercase" th:text="${order.status}">STAV</span>
                 </div>
 
                 <div class="p-6">

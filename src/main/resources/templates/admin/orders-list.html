@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:replace="~{layout :: layout(~{::content})}">
-<div th:fragment="content">
+<div th:fragment="content" class="p-6">
     <h1 class="text-3xl font-bold mb-8"><i class="fa fa-tasks text-blue-600"></i> Aktuálne objednávky</h1>
 
     <div class="overflow-x-auto bg-white rounded-xl shadow">
@@ -9,34 +9,41 @@
             <tr class="bg-gray-100 text-gray-600 uppercase text-sm">
                 <th class="p-4 border-b">ID</th>
                 <th class="p-4 border-b">Zákazník</th>
-                <th class="p-4 border-b">Čas</th>
+                <th class="p-4 border-b">Prijaté</th>
                 <th class="p-4 border-b">Suma</th>
-                <th class="p-4 border-b">Stav</th>
+                <th class="p-4 border-b">História stavov</th>
                 <th class="p-4 border-b text-center">Akcia</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition border-b">
+            <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition border-b align-top">
                 <td class="p-4 font-bold" th:text="'#' + ${order.orderId}">#1</td>
-                <td class="p-4">
-                    <span th:text="${order.user.firstName} + ' ' + ${order.user.lastName}">Meno</span>
-                    <br><small class="text-gray-400" th:text="${order.deliveryAddress.street}"></small>
+                <td class="p-4 text-sm">
+                    <span class="font-bold" th:text="${order.user.firstName} + ' ' + ${order.user.lastName}"></span>
+                    <br><small class="text-gray-500" th:text="${order.deliveryAddress.street}"></small>
                 </td>
-                <td class="p-4 text-sm" th:text="${#temporals.format(order.orderTime, 'HH:mm')}">12:00</td>
+                <td class="p-4 text-sm" th:text="${#temporals.format(order.orderTime, 'dd.MM. HH:mm')}">06.01. 12:00</td>
                 <td class="p-4 font-bold text-blue-600" th:text="${order.totalPrice} + ' €'">0 €</td>
+
                 <td class="p-4">
-                        <span th:text="${order.status}"
-                              th:classappend="${order.status == 'PENDING' ? 'text-orange-500' : (order.status == 'DELIVEblue' ? 'text-green-500' : 'text-blue-500')}"
-                              class="font-bold text-xs px-2 py-1 rounded bg-gray-100">STAV</span>
+                    <div class="text-[10px] space-y-1">
+                        <div th:each="h : ${order.statusHistory}" class="flex items-center space-x-2">
+                            <span class="text-gray-400 font-mono" th:text="${#temporals.format(h.changedAt, 'HH:mm:ss')}"></span>
+                            <span class="font-bold uppercase" th:text="${h.status}"></span>
+                        </div>
+                    </div>
                 </td>
-                <td class="p-4 flex justify-center space-x-2">
-                    <form th:action="@{/admin/orders/update-status}" method="post">
+
+                <td class="p-4">
+                    <form th:action="@{/admin/orders/update-status}" method="post" class="flex flex-col items-center">
                         <input type="hidden" name="orderId" th:value="${order.orderId}">
-                        <select name="status" onchange="this.form.submit()" class="text-xs border rounded p-1">
-                            <option value="PENDING" th:selected="${order.status == 'PENDING'}">Čaká</option>
-                            <option value="PREPARING" th:selected="${order.status == 'PREPARING'}">Pripravuje sa</option>
-                            <option value="DELIVERING" th:selected="${order.status == 'DELIVERING'}">Na ceste</option>
-                            <option value="DELIVEblue" th:selected="${order.status == 'DELIVEblue'}">Doručené</option>
+                        <select name="status" onchange="this.form.submit()"
+                                class="text-xs border rounded p-1 w-full bg-white"
+                                th:classappend="${order.status == 'PENDING' ? 'border-orange-500' : (order.status == 'DELIVERED' ? 'border-green-500' : 'border-blue-500')}">
+                            <option value="PENDING" th:selected="${order.status == 'PENDING'}">⌛ Čaká</option>
+                            <option value="PREPARING" th:selected="${order.status == 'PREPARING'}">👨‍🍳 Pripravuje sa</option>
+                            <option value="DELIVERING" th:selected="${order.status == 'DELIVERING'}">🚗 Na ceste</option>
+                            <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">✅ Doručené</option>
                         </select>
                     </form>
                 </td>
