@@ -10,6 +10,10 @@ import sk.ukf.opizza.entity.Address;
 import sk.ukf.opizza.entity.User;
 import sk.ukf.opizza.service.UserService;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
@@ -35,11 +39,14 @@ public class ProfileController {
         if (avatarFile != null && !avatarFile.isEmpty()) {
             try {
                 String fileName = "user_" + existingUser.getId() + "_" + avatarFile.getOriginalFilename();
-                String uploadDir = "uploads/avatars/";
-                java.nio.file.Path path = java.nio.file.Paths.get(uploadDir + fileName);
+                Path uploadPath = Paths.get("user-photos", "avatars");
 
-                java.nio.file.Files.createDirectories(path.getParent());
-                java.nio.file.Files.write(path, avatarFile.getBytes());
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Path filePath = uploadPath.resolve(fileName);
+                Files.write(filePath, avatarFile.getBytes());
 
                 existingUser.setAvatarUrl("/uploads/avatars/" + fileName);
             } catch (java.io.IOException e) {
