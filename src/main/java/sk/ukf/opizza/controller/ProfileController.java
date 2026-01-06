@@ -29,8 +29,23 @@ public class ProfileController {
     }
 
     @PostMapping("/update")
-    public String updateProfile(@ModelAttribute("user") User formUser, @AuthenticationPrincipal UserPrincipal principal) {
+    public String updateProfile(@ModelAttribute("user") User formUser, @RequestParam(value = "avatarFile", required = false) org.springframework.web.multipart.MultipartFile avatarFile, @AuthenticationPrincipal UserPrincipal principal) {
         User existingUser = userService.getUserById(principal.getUser().getId());
+
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            try {
+                String fileName = "user_" + existingUser.getId() + "_" + avatarFile.getOriginalFilename();
+                String uploadDir = "src/main/resources/static/uploads/avatars/";
+                java.nio.file.Path path = java.nio.file.Paths.get(uploadDir + fileName);
+
+                java.nio.file.Files.createDirectories(path.getParent());
+                java.nio.file.Files.write(path, avatarFile.getBytes());
+
+                existingUser.setAvatarUrl("/uploads/avatars/" + fileName);
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         existingUser.setFirstName(formUser.getFirstName());
         existingUser.setLastName(formUser.getLastName());
@@ -39,8 +54,8 @@ public class ProfileController {
         if (formUser.getPassword() != null && !formUser.getPassword().trim().isEmpty()) {
             existingUser.setPassword(formUser.getPassword());
         }
-        userService.saveUser(existingUser);
 
+        userService.saveUser(existingUser);
         return "redirect:/profile?success";
     }
 
@@ -51,6 +66,7 @@ public class ProfileController {
         Address selectedAddress = user.getAllAddresses().stream().filter(a -> a.getId() == addressId).findFirst().orElseThrow(() -> new RuntimeException("Adresa nebola nájdená"));
 
         user.setDefaultAddress(selectedAddress);
+
         userService.saveUser(user);
 
         return "redirect:/profile?success";

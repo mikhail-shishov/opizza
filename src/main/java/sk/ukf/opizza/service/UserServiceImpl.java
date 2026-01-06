@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(incoming);
         }
 
-        //update of user
+        // update of user
         User existing = userRepository.findById(incoming.getId()).orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
 
         existing.setFirstName(incoming.getFirstName());
@@ -54,11 +54,10 @@ public class UserServiceImpl implements UserService {
         existing.setPhone(incoming.getPhone());
         existing.setAvatarUrl(incoming.getAvatarUrl());
 
-        if (incoming.getPassword() != null && !incoming.getPassword().isEmpty()) {
+        if (incoming.getPassword() != null && !incoming.getPassword().isEmpty() && !incoming.getPassword().equals(existing.getPassword())) {
             existing.setPassword(passwordEncoder.encode(incoming.getPassword()));
         }
 
-        // if default address is changed
         if (incoming.getDefaultAddress() != null) {
             existing.setDefaultAddress(incoming.getDefaultAddress());
         }

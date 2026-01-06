@@ -1,6 +1,9 @@
 package sk.ukf.opizza.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -15,14 +18,27 @@ public class User {
     @Column(name = "user_id")
     private int id;
 
+    @NotBlank(message = "Email nesmie byť prázdny")
+    @Email(message = "Zadajte platnú emailovú adresu")
     @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
 
-    //    TODO stricter validation - only complex PW should be accepted, validation errors should be visible for user
+    @NotBlank(message = "Heslo je povinné")
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*\\d).{8,}$",
+            message = "Heslo musí mať aspoň 8 znakov, jedno veľké písmeno a jedno číslo"
+    )
     private String password;
+
+    @NotBlank(message = "Meno nesmie byť prázdne")
     private String firstName;
+
+    @NotBlank(message = "Priezvisko nesmie byť prázdne")
     private String lastName;
+
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Neplatný formát telefónneho čísla")
     private String phone;
+
     private String role;
     private String avatarUrl;
 
