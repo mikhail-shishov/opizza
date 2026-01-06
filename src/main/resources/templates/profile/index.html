@@ -8,13 +8,14 @@
             Profil bol úspešne aktualizovaný.
         </div>
 
-        <form th:action="@{/profile/update}" th:object="${user}" method="post" enctype="multipart/form-data" class="space-y-6">
+        <form th:action="@{/profile/update}" th:object="${user}" method="post" enctype="multipart/form-data"
+              class="space-y-6">
 
             <div class="flex items-center space-x-6 mb-6 pb-6 border-b border-gray-100">
                 <div class="shrink-0">
                     <img class="h-16 w-16 object-cover rounded-full border-2 border-blue-500"
                          th:src="${user.avatarUrl != null ? user.avatarUrl : '/img/default-avatar.webp'}"
-                         alt="Avatar preview" />
+                         alt="Avatar preview"/>
                 </div>
                 <label class="block">
                     <span class="sr-only">Vybrať fotku</span>
@@ -30,22 +31,26 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Meno</label>
-                    <input type="text" th:field="*{firstName}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" th:field="*{firstName}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Priezvisko</label>
-                    <input type="text" th:field="*{lastName}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    <input type="text" th:field="*{lastName}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
                 </div>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">Email (nepredajné)</label>
-                <input type="email" th:value="*{email}" disabled class="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md p-2 text-gray-500 cursor-not-allowed">
+                <input type="email" th:value="*{email}" disabled
+                       class="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md p-2 text-gray-500 cursor-not-allowed">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">Telefón</label>
-                <input type="text" th:field="*{phone}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                <input type="text" th:field="*{phone}"
+                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
             </div>
 
             <div class="pt-4 border-t border-gray-200">
@@ -64,24 +69,26 @@
 
                 <div class="mt-2 flex items-start space-x-2 text-gray-500">
                     <p class="text-[10px] leading-tight">
-                        Ak meníte heslo, musí mať aspoň <strong>8 znakov</strong>, jedno <strong>veľké písmeno</strong> a jedno <strong>číslo</strong>.
+                        Ak meníte heslo, musí mať aspoň <strong>8 znakov</strong>, jedno <strong>veľké písmeno</strong>
+                        a jedno <strong>číslo</strong>.
                     </p>
                 </div>
             </div>
 
-<!--            <div th:if="*{defaultAddress != null}" class="pt-4 border-t border-gray-200">-->
-<!--                <h3 class="text-lg font-semibold mb-4 text-gray-700">Predvolená adresa</h3>-->
-<!--                <div class="grid grid-cols-1 gap-4">-->
-<!--                    <input type="text" th:field="*{defaultAddress.street}" placeholder="Ulica" class="block w-full border border-gray-300 rounded-md shadow-sm p-2">-->
-<!--                    <div class="grid grid-cols-2 gap-4">-->
-<!--                        <input type="text" th:field="*{defaultAddress.city}" placeholder="Mesto" class="block w-full border border-gray-300 rounded-md shadow-sm p-2">-->
-<!--                        <input type="text" th:field="*{defaultAddress.zipCode}" placeholder="PSČ" class="block w-full border border-gray-300 rounded-md shadow-sm p-2">-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div th:if="*{defaultAddress != null}" class="pt-4 border-t border-gray-200">-->
+            <!--                <h3 class="text-lg font-semibold mb-4 text-gray-700">Predvolená adresa</h3>-->
+            <!--                <div class="grid grid-cols-1 gap-4">-->
+            <!--                    <input type="text" th:field="*{defaultAddress.street}" placeholder="Ulica" class="block w-full border border-gray-300 rounded-md shadow-sm p-2">-->
+            <!--                    <div class="grid grid-cols-2 gap-4">-->
+            <!--                        <input type="text" th:field="*{defaultAddress.city}" placeholder="Mesto" class="block w-full border border-gray-300 rounded-md shadow-sm p-2">-->
+            <!--                        <input type="text" th:field="*{defaultAddress.zipCode}" placeholder="PSČ" class="block w-full border border-gray-300 rounded-md shadow-sm p-2">-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
 
             <div class="flex justify-end pt-6">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg">
+                <button type="submit"
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg">
                     Uložiť zmeny
                 </button>
             </div>
@@ -91,23 +98,29 @@
             <h3 class="text-xl font-bold mb-4">Moje adresy</h3>
 
             <div class="grid grid-cols-1 gap-4 mb-6">
-                <div th:each="addr : ${user.allAddresses}" class="p-4 border rounded-lg flex justify-between items-center"
+                <div th:each="addr : ${user.allAddresses}"
+                     class="p-4 border rounded-lg flex justify-between items-center"
                      th:classappend="${user.defaultAddress != null && user.defaultAddress.id == addr.id} ? 'border-blue-500 bg-blue-50' : 'border-gray-200'">
                     <div>
                         <p class="font-semibold" th:text="${addr.street + ' ' + addr.house}">Ulica 123</p>
                         <p class="text-sm text-gray-600" th:text="${addr.zipCode + ' ' + addr.city}">949 01 Nitra</p>
-                        <span th:if="${user.defaultAddress != null && user.defaultAddress.id == addr.id}" class="text-xs font-bold text-blue-600">Predvolená</span>
+                        <span th:if="${user.defaultAddress != null && user.defaultAddress.id == addr.id}"
+                              class="text-xs font-bold text-blue-600">Predvolená</span>
                     </div>
                     <div class="flex space-x-2">
                         <form th:action="@{/profile/set-default-address}" method="post">
                             <input type="hidden" name="addressId" th:value="${addr.id}">
-                            <button type="submit" class="text-xs bg-white border border-gray-300 px-2 py-1 rounded hover:bg-gray-100">Nastaviť ako predvolenú</button>
+                            <button type="submit"
+                                    class="text-xs bg-white border border-gray-300 px-2 py-1 rounded hover:bg-gray-100">
+                                Nastaviť ako predvolenú
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <a th:href="@{/profile/add-address}" class="inline-block text-sm text-blue-600 font-semibold hover:underline">
+            <a th:href="@{/profile/add-address}"
+               class="inline-block text-sm text-blue-600 font-semibold hover:underline">
                 + Pridať novú adresu
             </a>
         </div>

@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 "/auth/reset-password"
                         ).permitAll()
                         // excluding technical files
-                        .requestMatchers("/static/css/**", "/css/**", "/static/js/**", "/static/img/**", "/img/**","/js/**", "/webjars/**").permitAll()
+                        .requestMatchers("/static/css/**", "/css/**", "/static/js/**", "/static/img/**", "/img/**","/js/**", "/webjars/**", "/uploads/**").permitAll()
 
                         .requestMatchers("/error").permitAll()
 

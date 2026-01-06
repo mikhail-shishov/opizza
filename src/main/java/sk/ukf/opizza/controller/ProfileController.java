@@ -35,7 +35,7 @@ public class ProfileController {
         if (avatarFile != null && !avatarFile.isEmpty()) {
             try {
                 String fileName = "user_" + existingUser.getId() + "_" + avatarFile.getOriginalFilename();
-                String uploadDir = "src/main/resources/static/uploads/avatars/";
+                String uploadDir = "uploads/avatars/";
                 java.nio.file.Path path = java.nio.file.Paths.get(uploadDir + fileName);
 
                 java.nio.file.Files.createDirectories(path.getParent());
