@@ -19,21 +19,21 @@
                         </label>
                     </div>
                 </div>
-                <a th:href="@{/profile/addresses}" class="text-blue-600 text-sm mt-2 inline-block">
+                <a th:href="@{/profile/add-address}" class="text-blue-600 text-sm mt-2 inline-block">
                     <i class="fa fa-plus"></i> Pridať novú adresu
                 </a>
             </div>
 
             <div>
                 <label class="block text-gray-700 font-bold mb-2">Poznámka pre kuchára alebo kuriéra</label>
-                <textarea name="note" rows="3" placeholder="Prosím, nevolajte" class="w-full border rounded-xl p-3 outline-none"></textarea>
+                <textarea name="note" rows="3" placeholder="Napr. prosím, nevolajte" class="w-full border rounded-xl p-3 outline-none"></textarea>
             </div>
 
             <div class="pt-6 border-t">
                 <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-xl shadow-xl transition transform">
                     Objednať s povinnosťou platby
                 </button>
-                <p class="text-center text-gray-400 text-xs mt-4">Kliknutím na tlačidlo súhlasíte s obchodnými podmienkami Opizza.</p>
+                <p class="text-center text-gray-400 text-xs mt-4">Kliknutím na tlačidlo súhlasíte s obchodnými podmienkami Opizza. Z technických dôvodov platba je možná iba v hotovosti.</p>
             </div>
         </form>
     </div>
