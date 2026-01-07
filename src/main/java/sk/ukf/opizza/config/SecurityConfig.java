@@ -72,7 +72,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // AuthenticationManager helps control identity
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);

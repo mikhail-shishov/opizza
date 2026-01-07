@@ -4,14 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sk.ukf.opizza.dao.ProductVariantRepository;
 import sk.ukf.opizza.entity.*;
-import sk.ukf.opizza.service.OrderService;
-import sk.ukf.opizza.service.PizzaService;
-import sk.ukf.opizza.service.CategoryService;
-import sk.ukf.opizza.service.TagService;
-import sk.ukf.opizza.service.SizeService;
+import sk.ukf.opizza.service.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -63,15 +65,37 @@ public class AdminController {
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(@ModelAttribute("product") Product product, @RequestParam(value = "imageUrls", required = false) List<String> imageUrls, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex, @RequestParam(value = "sizeIds", required = false) List<Integer> sizeIds, @RequestParam(value = "prices", required = false) List<Double> prices) {
+    public String saveProduct(@ModelAttribute("product") Product product, @RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex, @RequestParam(value = "sizeIds", required = false) List<Integer> sizeIds, @RequestParam(value = "prices", required = false) List<Double> prices) {
 
         if (product.getSlug() == null || product.getSlug().trim().isEmpty()) {
             product.setSlug(generateSlug(product.getName()));
-        } else {
-            product.setSlug(generateSlug(product.getSlug()));
         }
 
-        pizzaService.saveProductFull(product, imageUrls, mainIndex, sizeIds, prices);
+        List<String> finalUrls = new ArrayList<>();
+
+        if (imageFiles != null) {
+            for (MultipartFile file : imageFiles) {
+                if (!file.isEmpty()) {
+                    try {
+                        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
+                        Path uploadPath = Paths.get("user-photos", "products");
+
+                        if (!Files.exists(uploadPath)) {
+                            Files.createDirectories(uploadPath);
+                        }
+
+                        Path filePath = uploadPath.resolve(fileName);
+                        Files.write(filePath, file.getBytes());
+
+                        finalUrls.add("/uploads/products/" + fileName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        pizzaService.saveProductFull(product, finalUrls, mainIndex, sizeIds, prices);
 
         return "redirect:/admin/products";
     }

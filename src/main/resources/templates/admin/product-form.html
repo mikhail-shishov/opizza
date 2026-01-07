@@ -77,27 +77,29 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Obrázky produktu</label>
                 <div id="image-list" class="space-y-3">
-                    <div th:each="img, stat : ${product.images}" class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <input type="text" name="imageUrls" th:value="${img.url}" placeholder="URL adresa obrázka"
-                               class="flex-grow px-3 py-2 border rounded-md">
+                    <div th:each="img, stat : ${product.images}"
+                         class="flex items-center gap-3 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                        <img th:src="${img.url}" class="h-10 w-10 object-cover rounded shadow-sm">
+                        <span class="text-xs text-gray-500 truncate flex-grow" th:text="${img.url}">url</span>
                         <label class="flex items-center gap-2 whitespace-nowrap text-sm">
-                            <input type="radio" name="mainImageIndex" th:value="${stat.index}" th:checked="${img.main}"> Hlavný
+                            <input type="radio" name="mainImageIndex" th:value="${stat.index}" th:checked="${img.main}">
+                            Hlavný
                         </label>
-                        <button type="button" onclick="this.parentElement.remove()" class="text-red-500"><i class="fa fa-trash"></i></button>
+                        <input type="hidden" name="existingImageUrls" th:value="${img.url}">
                     </div>
 
-                    <div th:if="${product.productId == 0}" class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <input type="text" name="imageUrls" placeholder="URL adresa obrázka"
-                               class="flex-grow px-3 py-2 border rounded-md">
+                    <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <input type="file" name="imageFiles"
+                               class="flex-grow text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:bg-blue-50 file:text-blue-700">
                         <label class="flex items-center gap-2 whitespace-nowrap text-sm">
                             <input type="radio" name="mainImageIndex" value="0" checked> Hlavný
                         </label>
                     </div>
                 </div>
 
-                <button type="button" onclick="addImageRow()"
+                <button type="button" onclick="addImageUploadRow()"
                         class="mt-2 text-sm text-blue-600 font-semibold flex items-center gap-1 hover:text-blue-800">
-                    <i class="fa fa-plus-circle"></i> Pridat ďalšiu URL
+                    <i class="fa fa-plus-circle"></i> Pridať ďalšiu fotku
                 </button>
             </div>
 

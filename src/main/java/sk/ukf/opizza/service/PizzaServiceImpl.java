@@ -67,14 +67,14 @@ public class PizzaServiceImpl implements PizzaService {
             existingProduct.setCategory(product.getCategory());
             existingProduct.setSlug(product.getSlug());
             existingProduct.setAvailable(product.isAvailable());
+            existingProduct.setTags(product.getTags());
         } else {
             existingProduct = product;
         }
 
-        if (imageUrls != null) {
+        if (imageUrls != null && !imageUrls.isEmpty()) {
             existingProduct.getImages().clear();
             for (int i = 0; i < imageUrls.size(); i++) {
-                if (imageUrls.get(i) == null || imageUrls.get(i).trim().isEmpty()) continue;
                 ProductImage img = new ProductImage();
                 img.setUrl(imageUrls.get(i));
                 img.setMain(i == mainIndex);
@@ -92,7 +92,9 @@ public class PizzaServiceImpl implements PizzaService {
                 Double price = prices.get(i);
                 int currentSizeId = sizeIds.get(i);
 
-                ProductVariant variant = currentDbVariants.stream().filter(v -> v.getSize().getId() == currentSizeId).findFirst().orElse(new ProductVariant());
+                ProductVariant variant = currentDbVariants.stream()
+                        .filter(v -> v.getSize().getId() == currentSizeId)
+                        .findFirst().orElse(new ProductVariant());
 
                 if (price != null && price > 0) {
                     variant.setProduct(savedProduct);
