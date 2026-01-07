@@ -12,13 +12,11 @@ import sk.ukf.opizza.entity.User;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository; // access to db via JPA
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // looking for user via email
-        User user = userRepository.findByEmail(email.trim())
-                .orElseThrow(() -> new UsernameNotFoundException("Používateľ s emailom " + email + " nebol nájdený"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Používateľ nebol nájdený."));
 
         return new UserPrincipal(user);
     }

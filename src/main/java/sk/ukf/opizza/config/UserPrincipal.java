@@ -20,8 +20,8 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String dbRole = user.getRole().toLowerCase();
-        return List.of(new SimpleGrantedAuthority("ROLE_" + dbRole));
+        String roleName = user.getRole().toUpperCase();
+        return List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
     }
 
     @Override
@@ -52,10 +52,9 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isActive();
     }
 
-    // TODO optional authentication
     public String getFirstName() {
         return user.getFirstName();
     }
