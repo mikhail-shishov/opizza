@@ -10,19 +10,21 @@ import java.time.LocalDateTime;
 public class OrderStatusHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
     private String status;
 
-    public Long getId() {
+    private LocalDateTime changedAt;
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -49,7 +51,4 @@ public class OrderStatusHistory {
     public void setChangedAt(LocalDateTime changedAt) {
         this.changedAt = changedAt;
     }
-
-    @CreationTimestamp
-    private LocalDateTime changedAt;
 }

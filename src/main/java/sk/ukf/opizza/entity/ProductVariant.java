@@ -19,6 +19,17 @@ public class ProductVariant {
     @JoinColumn(name = "size_id", nullable = false)
     private Size size;
 
+    @Column(name = "is_active")
+    private boolean isActive = true;
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        this.isActive = active;
+    }
+
     public int getVariantId() {
         return variantId;
     }

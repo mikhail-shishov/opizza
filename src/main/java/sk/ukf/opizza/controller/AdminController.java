@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import sk.ukf.opizza.dao.ProductVariantRepository;
 import sk.ukf.opizza.entity.*;
 import sk.ukf.opizza.service.OrderService;
 import sk.ukf.opizza.service.PizzaService;
@@ -22,14 +23,16 @@ public class AdminController {
     private final CategoryService categoryService;
     private final TagService tagService;
     private final SizeService sizeService;
+    private final ProductVariantRepository variantRepository;
 
     @Autowired
-    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService, TagService tagService, SizeService sizeService) {
+    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService, TagService tagService, SizeService sizeService, ProductVariantRepository variantRepository) {
         this.orderService = orderService;
         this.pizzaService = pizzaService;
         this.categoryService = categoryService;
         this.tagService = tagService;
         this.sizeService = sizeService;
+        this.variantRepository = variantRepository;
     }
 
     @GetMapping("/orders")
@@ -60,11 +63,7 @@ public class AdminController {
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(@ModelAttribute("product") Product product,
-                              @RequestParam(value = "imageUrls", required = false) List<String> imageUrls,
-                              @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex,
-                              @RequestParam(value = "sizeIds", required = false) List<Integer> sizeIds,
-                              @RequestParam(value = "prices", required = false) List<Double> prices) {
+    public String saveProduct(@ModelAttribute("product") Product product, @RequestParam(value = "imageUrls", required = false) List<String> imageUrls, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex, @RequestParam(value = "sizeIds", required = false) List<Integer> sizeIds, @RequestParam(value = "prices", required = false) List<Double> prices) {
 
         if (product.getSlug() == null || product.getSlug().trim().isEmpty()) {
             product.setSlug(generateSlug(product.getName()));
@@ -141,9 +140,7 @@ public class AdminController {
     }
 
     @PostMapping("/sizes/save")
-    public String saveSize(@RequestParam(required = false) Integer id,
-                           @RequestParam String name,
-                           @RequestParam int weightGrams) {
+    public String saveSize(@RequestParam(required = false) Integer id, @RequestParam String name, @RequestParam int weightGrams) {
         Size size = (id != null) ? sizeService.getSizeById(id) : new Size();
         size.setName(name);
         size.setWeightGrams(weightGrams);

@@ -56,50 +56,56 @@ public class PizzaServiceImpl implements PizzaService {
         productRepository.save(pizza);
     }
 
-    @Override
     @Transactional
-    public void savePizzaWithImages(Product product, List<String> imageUrls, int mainIndex) {
-    }
-
     @Override
-    @Transactional
     public void saveProductFull(Product product, List<String> imageUrls, int mainIndex, List<Integer> sizeIds, List<Double> prices) {
-        Product savedProduct = productRepository.save(product);
-
-        if (savedProduct.getImages() == null) {
-            savedProduct.setImages(new ArrayList<>());
+        Product existingProduct;
+        if (product.getProductId() != 0) {
+            existingProduct = productRepository.findById(product.getProductId()).orElse(product);
+            existingProduct.setName(product.getName());
+            existingProduct.setDescription(product.getDescription());
+            existingProduct.setCategory(product.getCategory());
+            existingProduct.setSlug(product.getSlug());
+            existingProduct.setAvailable(product.isAvailable());
         } else {
-            savedProduct.getImages().clear();
+            existingProduct = product;
         }
 
         if (imageUrls != null) {
+            existingProduct.getImages().clear();
             for (int i = 0; i < imageUrls.size(); i++) {
-                String url = imageUrls.get(i);
-                if (url != null && !url.trim().isEmpty()) {
-                    ProductImage img = new ProductImage();
-                    img.setUrl(url.trim());
-                    img.setProduct(savedProduct);
-                    img.setMain(i == mainIndex);
-                    savedProduct.getImages().add(img);
-                }
+                if (imageUrls.get(i) == null || imageUrls.get(i).trim().isEmpty()) continue;
+                ProductImage img = new ProductImage();
+                img.setUrl(imageUrls.get(i));
+                img.setMain(i == mainIndex);
+                img.setProduct(existingProduct);
+                existingProduct.getImages().add(img);
             }
         }
 
-        variantRepository.deleteByProductProductId(savedProduct.getProductId());
+        Product savedProduct = productRepository.save(existingProduct);
 
         if (sizeIds != null && prices != null) {
+            List<ProductVariant> currentDbVariants = variantRepository.findByProductProductId(savedProduct.getProductId());
+
             for (int i = 0; i < sizeIds.size(); i++) {
-                if (i < prices.size() && prices.get(i) != null && prices.get(i) > 0) {
-                    ProductVariant v = new ProductVariant();
-                    v.setProduct(savedProduct);
-                    v.setPrice(prices.get(i));
-                    v.setSize(sizeRepository.findById(sizeIds.get(i)).orElse(null));
-                    variantRepository.save(v);
+                Double price = prices.get(i);
+                int currentSizeId = sizeIds.get(i);
+
+                ProductVariant variant = currentDbVariants.stream().filter(v -> v.getSize().getId() == currentSizeId).findFirst().orElse(new ProductVariant());
+
+                if (price != null && price > 0) {
+                    variant.setProduct(savedProduct);
+                    variant.setPrice(price);
+                    variant.setSize(sizeRepository.findById(currentSizeId).orElseThrow());
+                    variant.setActive(true);
+                    variantRepository.save(variant);
+                } else if (variant.getVariantId() != 0) {
+                    variant.setActive(false);
+                    variantRepository.save(variant);
                 }
             }
         }
-
-        productRepository.save(savedProduct);
     }
 
     @Override
