@@ -9,4 +9,5 @@ public interface OrderService {
     List<Order> getUserOrderHistory(User user);
     List<Order> getAllOrders();
     void updateStatus(int orderId, String status);
+    int countByStatus(String status);
 }

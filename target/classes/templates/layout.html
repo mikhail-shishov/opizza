@@ -28,12 +28,29 @@ stav → delivering → delivered.-->
 
         <div class="hidden lg:flex items-center space-x-6">
             <div sec:authorize="hasRole('ADMIN')" class="flex items-center space-x-2 border-r pr-2 border-gray-200">
-                <a th:href="@{/admin/orders}" class="text-gray-600 hover:text-blue-600 font-small">Objednávky</a>
+                <a th:href="@{/admin/orders}" class="text-gray-600 hover:text-blue-600 font-small flex items-center gap-1">
+                    Objednávky
+                    <span id="order-badge" class="order-badge-count hidden bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full blink-notification">0</span>
+                </a>
                 <a th:href="@{/admin/products}" class="text-gray-600 hover:text-blue-600 font-small">Menu</a>
                 <a th:href="@{/admin/categories}" class="text-gray-600 hover:text-blue-600 font-small">Kategórie</a>
                 <a th:href="@{/admin/tags}" class="text-gray-600 hover:text-blue-600 font-small">Tagy</a>
                 <a th:href="@{/admin/sizes}" class="text-gray-600 font-small">Velkosti</a>
                 <a th:href="@{/admin/users}" class="text-gray-600 font-small">Users</a>
+            </div>
+
+            <div sec:authorize="hasRole('COOK')" class="flex items-center space-x-2 border-r pr-2 border-gray-200">
+                <a th:href="@{/admin/orders}" class="text-gray-600 hover:text-blue-600 font-small flex items-center gap-1">
+                    Objednávky
+                    <span id="order-badge" class="order-badge-count hidden bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full blink-notification">0</span>
+                </a>
+            </div>
+
+            <div sec:authorize="hasRole('COURIER')" class="flex items-center space-x-2 border-r pr-2 border-gray-200">
+                <a th:href="@{/admin/orders}" class="text-gray-600 hover:text-blue-600 font-small flex items-center gap-1">
+                    Objednávky
+                    <span id="order-badge" class="order-badge-count hidden bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full blink-notification">0</span>
+                </a>
             </div>
 
             <form th:action="@{/}" method="get" class="relative">
@@ -71,12 +88,29 @@ stav → delivering → delivered.-->
     <div id="mobile-menu" class="hidden lg:hidden bg-gray-50 border-t border-gray-200 px-4 py-4 space-y-4 text-center">
         <div sec:authorize="hasRole('ADMIN')" class="flex flex-col space-y-2 border-b pb-4">
             <span class="text-xs font-bold text-gray-400 uppercase">Administrácia</span>
-            <a th:href="@{/admin/orders}" class="text-gray-600 font-small">Objednávky</a>
+            <a th:href="@{/admin/orders}" class="text-gray-600 font-small flex items-center justify-center gap-2">
+                Objednávky
+                <span id="order-badge-mobile" class="hidden bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full blink-notification">0</span>
+            </a>
             <a th:href="@{/admin/products}" class="text-gray-600 font-small">Menu</a>
             <a th:href="@{/admin/categories}" class="text-gray-600 font-small">Kategórie</a>
             <a th:href="@{/admin/tags}" class="text-gray-600 font-small">Tagy</a>
             <a th:href="@{/admin/sizes}" class="text-gray-600 font-small">Velkosti</a>
             <a th:href="@{/admin/users}" class="text-gray-600 font-small">Users</a>
+        </div>
+
+        <div sec:authorize="hasRole('COOK')" class="flex flex-col space-y-2 border-b pb-4">
+            <a th:href="@{/admin/orders}" class="text-gray-600 font-small flex items-center justify-center gap-2">
+                Objednávky
+                <span id="order-badge-mobile" class="hidden bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full blink-notification">0</span>
+            </a>
+        </div>
+
+        <div sec:authorize="hasRole('COURIER')" class="flex flex-col space-y-2 border-b pb-4">
+            <a th:href="@{/admin/orders}" class="text-gray-600 font-small flex items-center justify-center gap-2">
+                Objednávky
+                <span id="order-badge-mobile" class="hidden bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full blink-notification">0</span>
+            </a>
         </div>
 
         <form th:action="@{/}" method="get" class="relative">

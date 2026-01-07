@@ -54,7 +54,7 @@ function editCategory(id, name) {
         nameField.value = name;
         if (submitBtn) submitBtn.innerText = 'Uložiť zmeny';
         if (cancelBtn) cancelBtn.classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 }
 
@@ -71,7 +71,7 @@ function editTag(id, name, color) {
     document.getElementById('tagColor').value = color;
     document.getElementById('tagSubmitBtn').innerText = 'Uložiť zmeny';
     document.getElementById('tagCancelBtn').classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function resetTagForm() {
@@ -90,7 +90,7 @@ function editSize(id, name, weight) {
     document.getElementById('sizeSubmitBtn').innerText = 'Aktualizovať';
     document.getElementById('sizeCancelBtn').classList.remove('hidden');
 
-    document.getElementById('sizeForm').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('sizeForm').scrollIntoView({behavior: 'smooth'});
 }
 
 function resetSizeForm() {
@@ -110,4 +110,26 @@ function filterUsers() {
         const text = row.querySelector('.search-data').textContent.toLowerCase();
         row.style.display = text.includes(input) ? "" : "none";
     });
+}
+
+function updateOrderNotifications() {
+    fetch('/orders/api/notifications/count') // Check path matches @RequestMapping("/orders")
+        .then(response => response.json())
+        .then(count => {
+            const badges = document.querySelectorAll('.order-badge-count, #order-badge-mobile');
+            badges.forEach(badge => {
+                if (count > 0) {
+                    badge.innerText = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            });
+        })
+        .catch(err => console.error(err));
+}
+
+if (document.getElementById('order-badge') || document.getElementById('order-badge-mobile')) {
+    updateOrderNotifications();
+    setInterval(updateOrderNotifications, 30000);
 }

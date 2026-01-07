@@ -92,4 +92,9 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(o);
     }
+
+    @Override
+    public int countByStatus(String status) {
+        return orderRepository.countByStatus(status);
+    }
 }

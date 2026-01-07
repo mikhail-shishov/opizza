@@ -5,7 +5,6 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-10">Naša ponuka</h1>
 
     <div class="flex space-x-4 mb-10">
-        <!--        <a th:href="@{/}" class="px-4 py-2 bg-white border rounded-full transition">Všetko</a>-->
         <div th:each="cat : ${categories}">
             <a th:href="@{/(category=${cat.id})}"
                class="px-4 py-2 bg-white border rounded-full transition"
@@ -16,20 +15,15 @@
     <div th:if="${pizzas.empty}" class="text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
         <div class="text-5xl mb-4">🍕</div>
         <h2 class="text-2xl font-bold text-gray-700">Prepáčte, nemáme túto položku :(</h2>
-        <p class="text-gray-500 mt-2">Skúste zadať iný názov alebo si pozrite celú našu ponuku.</p>
         <a th:href="@{/}"
            class="inline-block mt-6 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
             Zobraziť celé menu
         </a>
     </div>
 
-    <div th:if="${!pizzas.empty}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div th:each="pizza : ${pizzas}" class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div th:each="pizza : ${pizzas}" class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+    <div th:if="${!pizzas.empty}" id="pizza-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div th:each="pizza : ${pizzas}"
+             class="pizza-item bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
             <div th:with="mainImages=${pizza.images != null ? pizza.images.?[isMain] : null}">
                 <img th:src="${mainImages != null and !mainImages.empty ? mainImages[0].url : (pizza.images != null and !pizza.images.empty ? pizza.images[0].url : '/img/pizza_pictures/placeholder.webp')}"
                      class="w-full h-48 object-cover rounded-t-xl"
@@ -38,8 +32,10 @@
             <div class="p-4">
                 <div class="flex justify-between items-start mb-2">
                     <h3 class="text-xl font-bold text-gray-900" th:text="${pizza.name}">Názov pizze</h3>
-                    <span th:each="tag : ${pizza.tags}" th:style="'background-color:' + ${tag.colorHex}"
-                          class="text-[10px] text-white px-2 py-1 rounded ml-1" th:text="${tag.name}">Tag</span>
+                    <div class="flex flex-wrap gap-1">
+                        <span th:each="tag : ${pizza.tags}" th:style="'background-color:' + ${tag.colorHex}"
+                              class="text-[10px] text-white px-2 py-1 rounded" th:text="${tag.name}">Tag</span>
+                    </div>
                 </div>
                 <p class="text-gray-600 text-sm mb-4 line-clamp-2" th:text="${pizza.description}">Popis...</p>
 
@@ -47,7 +43,6 @@
                     <span class="text-lg font-bold text-red-600">
                         <span th:if="${pizza.getMinPriceFormatted() != '-'}"
                               th:text="'od ' + ${pizza.getMinPriceFormatted()}">od 6.50 €</span>
-                        <span th:if="${pizza.getMinPriceFormatted() == '-'}" th:text="'-'">-</span>
                     </span>
 
                     <a th:href="@{'/pizza/' + ${pizza.slug}}"
@@ -58,5 +53,7 @@
             </div>
         </div>
     </div>
+
+    <div id="pagination-controls" class="flex justify-center items-center space-x-2 mt-12 mb-8"></div>
 </div>
 </html>

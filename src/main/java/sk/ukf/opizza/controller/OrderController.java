@@ -1,6 +1,7 @@
 package sk.ukf.opizza.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,5 +50,25 @@ public class OrderController {
         List<Order> history = orderService.getUserOrderHistory(user);
         model.addAttribute("orders", history);
         return "order/history";
+    }
+
+    @GetMapping("/api/notifications/count")
+    @ResponseBody
+    public ResponseEntity<Integer> getOrderNotificationCount(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.ok(0);
+        }
+
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        String role = principal.getUser().getRole();
+
+        int count = 0;
+        if ("ADMIN".equalsIgnoreCase(role) || "COOK".equalsIgnoreCase(role)) {
+            count = orderService.countByStatus("PENDING");
+        } else if ("COURIER".equalsIgnoreCase(role)) {
+            count = orderService.countByStatus("READY");
+        }
+
+        return ResponseEntity.ok(count);
     }
 }

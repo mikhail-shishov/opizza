@@ -15,4 +15,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT o FROM Order o WHERE o.status = 'READY' OR o.status = 'DELIVERING'")
     List<Order> findActiveDeliveries();
+
+    int countByStatus(String status);
 }
