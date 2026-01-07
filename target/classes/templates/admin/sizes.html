@@ -41,7 +41,7 @@
                     <td class="p-4 text-gray-600" th:text="${s.weightGrams} + ' g'">550 g</td>
                     <td class="p-4 text-right flex justify-end gap-4">
                         <button type="button" class="text-blue-600 hover:underline font-medium"
-                                th:onclick="editSize([[${s.id}]], [[${s.name}]], [[${s.weightGrams}]])">
+                                th:onclick="|editSize('${s.id}', '${s.name}', '${s.weightGrams}')|">
                             Upraviť
                         </button>
 

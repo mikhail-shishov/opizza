@@ -101,3 +101,13 @@ function resetSizeForm() {
     document.getElementById('sizeSubmitBtn').innerText = 'Uložiť';
     document.getElementById('sizeCancelBtn').classList.add('hidden');
 }
+
+function filterUsers() {
+    const input = document.getElementById('userSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('.user-row');
+
+    rows.forEach(row => {
+        const text = row.querySelector('.search-data').textContent.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+    });
+}
