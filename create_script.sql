@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `opizza`.`addresses` ( `addresses_id` INT NOT NULL AU
 -- -----------------------------------------------------
 -- Table `opizza`.`users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `opizza`.`users` ( `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `email` VARCHAR(100) NOT NULL, `password` VARCHAR(255) NOT NULL, `first_name` VARCHAR(50) NOT NULL, `last_name` VARCHAR(50) NOT NULL, `phone` VARCHAR(20) NOT NULL, `role` VARCHAR(20) NOT NULL DEFAULT 'GUEST', `avatar_url` VARCHAR(255) NULL, `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `is_active` TINYINT NULL, `default_address_id` INT NULL, PRIMARY KEY (`user_id`), UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE, INDEX `fk_users_addresses_idx` (`default_address_id` ASC) VISIBLE, CONSTRAINT `fk_users_addresses` FOREIGN KEY (`default_address_id`) REFERENCES `opizza`.`addresses` (`addresses_id`) ) ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `opizza`.`users` ( `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `email` VARCHAR(100) NOT NULL, `password` VARCHAR(255) NOT NULL, `first_name` VARCHAR(50) NOT NULL, `last_name` VARCHAR(50) NOT NULL, `phone` VARCHAR(20) NOT NULL, `role` VARCHAR(20) NOT NULL DEFAULT 'USER', `avatar_url` VARCHAR(255) NULL, `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `is_active` TINYINT NULL, `default_address_id` INT NULL, PRIMARY KEY (`user_id`), UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE, INDEX `fk_users_addresses_idx` (`default_address_id` ASC) VISIBLE, CONSTRAINT `fk_users_addresses` FOREIGN KEY (`default_address_id`) REFERENCES `opizza`.`addresses` (`addresses_id`) ) ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------

@@ -26,7 +26,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="u : ${users}" class="user-row hover:bg-gray-50 transition border-b align-middle">
+            <tr th:each="u : ${users}" class="user-row hover:bg-gray-50 transition border-b align-middle" th:classappend="${u.role == 'ADMIN' or u.role == 'COOK' or u.role == 'COURIER' ? 'bg-blue-50' : 'bg-white'}">
                 <td class="p-4 font-mono text-gray-500" th:text="'#' + ${u.id}">#1</td>
                 <td class="p-4 text-sm">
                     <div class="search-data">
@@ -39,7 +39,6 @@
                         <input type="hidden" name="userId" th:value="${u.id}"/>
                         <select name="role" onchange="this.form.submit()"
                                 class="text-xs border rounded p-1 bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="GUEST" th:selected="${u.role == 'GUEST'}">GUEST</option>
                             <option value="USER" th:selected="${u.role == 'USER'}">USER</option>
                             <option value="COOK" th:selected="${u.role == 'COOK'}">COOK</option>
                             <option value="COURIER" th:selected="${u.role == 'COURIER'}">COURIER</option>

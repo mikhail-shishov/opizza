@@ -154,7 +154,9 @@ stav → delivering → delivered.-->
 </footer>
 
 <script th:src="@{/js/scripts.js}" defer></script>
-<script th:src="@{/js/admin.js}" defer sec:authorize="hasRole('admin')"></script>
+<script th:src="@{/js/admin.js}" defer sec:authorize="hasRole('ADMIN')"></script>
+<script th:src="@{/js/admin.js}" defer sec:authorize="hasRole('COOK')"></script>
+<script th:src="@{/js/admin.js}" defer sec:authorize="hasRole('COURIER')"></script>
 
 </body>
 </html>

@@ -42,11 +42,10 @@ public class SecurityConfig {
 
                         .requestMatchers("/error").permitAll()
 
+                        // other roles
+                        .requestMatchers("/admin/orders/**").hasAnyRole("ADMIN", "COOK", "COURIER")
                         // safety for admin panel
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                        // other roles
-                        .requestMatchers("/admin/orders/**").hasAnyRole("COOK", "COURIER")
 
                         // other requests
                         .anyRequest().authenticated())
