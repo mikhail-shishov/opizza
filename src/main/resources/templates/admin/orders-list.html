@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html th:replace="~{layout :: layout(~{::content})}">
-<div th:fragment="content" class="p-6">
+<div xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="content" class="p-6">
     <h1 class="text-3xl font-bold mb-8"><i class="fa fa-tasks text-blue-600"></i> Aktuálne objednávky</h1>
 
     <div class="overflow-x-auto bg-white rounded-xl shadow">
@@ -38,12 +39,21 @@
                     <form th:action="@{/admin/orders/update-status}" method="post" class="flex flex-col items-center">
                         <input type="hidden" name="orderId" th:value="${order.orderId}">
                         <select name="status" onchange="this.form.submit()"
-                                class="text-xs border rounded p-1 w-full bg-white"
-                                th:classappend="${order.status == 'PENDING' ? 'border-orange-500' : (order.status == 'DELIVERED' ? 'border-green-500' : 'border-blue-500')}">
-                            <option value="PENDING" th:selected="${order.status == 'PENDING'}">⌛ Čaká</option>
-                            <option value="PREPARING" th:selected="${order.status == 'PREPARING'}">👨‍🍳 Pripravuje sa</option>
-                            <option value="DELIVERING" th:selected="${order.status == 'DELIVERING'}">🚗 Na ceste</option>
-                            <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">✅ Doručené</option>
+                                class="text-xs border rounded p-1 w-full bg-white">
+
+                            <option value="PENDING" th:selected="${order.status == 'PENDING'}">⌛ Čaká (Pending)</option>
+
+                            <th:block sec:authorize="hasAnyRole('ADMIN', 'COOK')">
+                                <option value="PREPARING" th:selected="${order.status == 'PREPARING'}">👨‍🍳 Pripravuje sa</option>
+                                <option value="READY" th:selected="${order.status == 'READY'}">🍕 Hotovo / Na odber</option>
+                            </th:block>
+
+                            <th:block sec:authorize="hasAnyRole('ADMIN', 'COURIER')">
+                                <option value="DELIVERING" th:selected="${order.status == 'DELIVERING'}">🚗 Na ceste</option>
+                                <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">✅ Doručené</option>
+                            </th:block>
+
+                            <option sec:authorize="hasRole('ADMIN')" value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">❌ Zrušená</option>
                         </select>
                     </form>
                 </td>

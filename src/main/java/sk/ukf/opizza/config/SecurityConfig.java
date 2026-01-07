@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // other roles
-                        // .requestMatchers("/employer/**").hasRole("cook")
+                        .requestMatchers("/admin/orders/**").hasAnyRole("COOK", "COURIER")
 
                         // other requests
                         .anyRequest().authenticated())

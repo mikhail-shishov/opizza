@@ -1,12 +1,21 @@
 <!DOCTYPE html>
-<html th:replace="~{layout :: layout(~{::content})}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout(~{::content})}">
 <div th:fragment="content" class="p-6">
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold"><i class="fa fa-users text-blue-600"></i> Správa používateľov</h1>
+
+        <div class="relative">
+            <input type="text" id="userSearch" onkeyup="filterUsers()"
+                   placeholder="Hľadať meno alebo email..."
+                   class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-80">
+            <i class="fa fa-search absolute left-3 top-3 text-gray-400"></i>
+        </div>
     </div>
 
     <div class="overflow-x-auto bg-white rounded-xl shadow">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full text-left border-collapse" id="userTable">
             <thead>
             <tr class="bg-gray-100 text-gray-600 uppercase text-sm">
                 <th class="p-4 border-b">ID</th>
@@ -17,11 +26,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="u : ${users}" class="hover:bg-gray-50 transition border-b align-middle">
+            <tr th:each="u : ${users}" class="user-row hover:bg-gray-50 transition border-b align-middle">
                 <td class="p-4 font-mono text-gray-500" th:text="'#' + ${u.id}">#1</td>
                 <td class="p-4 text-sm">
-                    <span class="font-bold block" th:text="${u.firstName + ' ' + u.lastName}">Meno</span>
-                    <span class="text-gray-500" th:text="${u.email}">email@example.com</span>
+                    <div class="search-data">
+                        <span class="font-bold block" th:text="${u.firstName + ' ' + u.lastName}">Meno</span>
+                        <span class="text-gray-500" th:text="${u.email}">mail@example.com</span>
+                    </div>
                 </td>
                 <td class="p-4">
                     <form th:action="@{/admin/users/update-role}" method="post" class="flex items-center space-x-2">
@@ -30,6 +41,8 @@
                                 class="text-xs border rounded p-1 bg-white focus:ring-2 focus:ring-blue-500 outline-none">
                             <option value="GUEST" th:selected="${u.role == 'GUEST'}">GUEST</option>
                             <option value="USER" th:selected="${u.role == 'USER'}">USER</option>
+                            <option value="COOK" th:selected="${u.role == 'COOK'}">COOK</option>
+                            <option value="COURIER" th:selected="${u.role == 'COURIER'}">COURIER</option>
                             <option value="ADMIN" th:selected="${u.role == 'ADMIN'}">ADMIN</option>
                         </select>
                     </form>
@@ -56,5 +69,17 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        function filterUsers() {
+            const input = document.getElementById('userSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('.user-row');
+
+            rows.forEach(row => {
+                const text = row.querySelector('.search-data').textContent.toLowerCase();
+                row.style.display = text.includes(input) ? "" : "none";
+            });
+        }
+    </script>
 </div>
 </html>

@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
             incoming.setPassword(passwordEncoder.encode(incoming.getPassword()));
 
-            if (incoming.getRole() == null) incoming.setRole("GUEST");
+            if (incoming.getRole() == null) incoming.setRole("USER");
             incoming.setActive(true);
             return userRepository.save(incoming);
         }

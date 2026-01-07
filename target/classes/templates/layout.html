@@ -51,6 +51,9 @@ stav → delivering → delivered.-->
             </div>
 
             <div sec:authorize="isAuthenticated()" class="flex items-center space-x-4">
+                <a th:href="@{/orders/history}" class="text-gray-600">
+                    <span>História</span>
+                </a>
                 <a th:href="@{/profile}" class="font-semibold text-gray-600">
                     <span th:if="${#authentication.principal instanceof T(sk.ukf.opizza.config.UserPrincipal)}" th:text="${#authentication.principal.firstName}">Meno</span>
                 </a>
@@ -92,6 +95,9 @@ stav → delivering → delivered.-->
             </div>
 
             <div sec:authorize="isAuthenticated()" class="flex flex-col space-y-3">
+                <a th:href="@{/orders/history}" class="text-gray-600">
+                    História
+                </a>
                 <a th:href="@{/profile}" class="font-semibold text-gray-600">
                     Profil (<span th:text="${#authentication.principal.firstName}">Meno</span>)
                 </a>
