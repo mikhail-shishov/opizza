@@ -25,7 +25,6 @@ if (nameInput && slugInput) {
     });
 }
 
-
 function addImageUploadRow() {
     const list = document.getElementById('image-list');
     const index = list.querySelectorAll('input[type="radio"]').length;

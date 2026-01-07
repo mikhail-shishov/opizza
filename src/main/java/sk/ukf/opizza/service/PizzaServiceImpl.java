@@ -58,8 +58,9 @@ public class PizzaServiceImpl implements PizzaService {
 
     @Transactional
     @Override
-    public void saveProductFull(Product product, List<String> imageUrls, int mainIndex, List<Integer> sizeIds, List<Double> prices) {
+    public void saveProductFull(Product product, List<String> imageUrls, List<Integer> existingImageIds, int mainIndex, List<Integer> sizeIds, List<Double> prices) {
         Product existingProduct;
+
         if (product.getProductId() != 0) {
             existingProduct = productRepository.findById(product.getProductId()).orElse(product);
             existingProduct.setName(product.getName());
@@ -72,15 +73,25 @@ public class PizzaServiceImpl implements PizzaService {
             existingProduct = product;
         }
 
+        if (existingProduct.getProductId() != 0) {
+            if (existingImageIds == null || existingImageIds.isEmpty()) {
+                existingProduct.getImages().clear();
+            } else {
+                existingProduct.getImages().removeIf(img -> !existingImageIds.contains(img.getId()));
+            }
+        }
+
         if (imageUrls != null && !imageUrls.isEmpty()) {
-            existingProduct.getImages().clear();
-            for (int i = 0; i < imageUrls.size(); i++) {
+            for (String url : imageUrls) {
                 ProductImage img = new ProductImage();
-                img.setUrl(imageUrls.get(i));
-                img.setMain(i == mainIndex);
+                img.setUrl(url);
                 img.setProduct(existingProduct);
                 existingProduct.getImages().add(img);
             }
+        }
+
+        for (int i = 0; i < existingProduct.getImages().size(); i++) {
+            existingProduct.getImages().get(i).setMain(i == mainIndex);
         }
 
         Product savedProduct = productRepository.save(existingProduct);
@@ -92,9 +103,7 @@ public class PizzaServiceImpl implements PizzaService {
                 Double price = prices.get(i);
                 int currentSizeId = sizeIds.get(i);
 
-                ProductVariant variant = currentDbVariants.stream()
-                        .filter(v -> v.getSize().getId() == currentSizeId)
-                        .findFirst().orElse(new ProductVariant());
+                ProductVariant variant = currentDbVariants.stream().filter(v -> v.getSize().getId() == currentSizeId).findFirst().orElse(new ProductVariant());
 
                 if (price != null && price > 0) {
                     variant.setProduct(savedProduct);

@@ -10,8 +10,6 @@ public interface PizzaService {
     Product getPizzaById(int id);
     void savePizza(Product pizza);
     void softDeletePizza(int id);
-
-    void saveProductFull(Product product, List<String> imageUrls, int mainIndex, List<Integer> sizeIds, List<Double> prices);
-
+    void saveProductFull(Product product, List<String> imageUrls, List<Integer> existingImageIds, int mainIndex, List<Integer> sizeIds, List<Double> prices);
     Product getPizzaBySlug(String slug);
 }

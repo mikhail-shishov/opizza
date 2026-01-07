@@ -39,7 +39,7 @@ public class ProfileController {
         if (avatarFile != null && !avatarFile.isEmpty()) {
             try {
                 String fileName = "user_" + existingUser.getId() + "_" + avatarFile.getOriginalFilename();
-                Path uploadPath = Paths.get("user-photos", "avatars");
+                Path uploadPath = Paths.get("user-pics", "avatars");
 
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);

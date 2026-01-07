@@ -65,8 +65,13 @@ public class AdminController {
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(@ModelAttribute("product") Product product, @RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex, @RequestParam(value = "sizeIds", required = false) List<Integer> sizeIds, @RequestParam(value = "prices", required = false) List<Double> prices) {
-
+    public String saveProduct(
+            @ModelAttribute("product") Product product,
+            @RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
+            @RequestParam(value = "existingImageIds", required = false) List<Integer> existingImageIds,
+            @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex,
+            @RequestParam(value = "sizeIds", required = false) List<Integer> sizeIds,
+            @RequestParam(value = "prices", required = false) List<Double> prices) {
         if (product.getSlug() == null || product.getSlug().trim().isEmpty()) {
             product.setSlug(generateSlug(product.getName()));
         }
@@ -78,7 +83,7 @@ public class AdminController {
                 if (!file.isEmpty()) {
                     try {
                         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
-                        Path uploadPath = Paths.get("user-photos", "products");
+                        Path uploadPath = Paths.get("user-pics", "products");
 
                         if (!Files.exists(uploadPath)) {
                             Files.createDirectories(uploadPath);
@@ -95,7 +100,7 @@ public class AdminController {
             }
         }
 
-        pizzaService.saveProductFull(product, finalUrls, mainIndex, sizeIds, prices);
+        pizzaService.saveProductFull(product, finalUrls, existingImageIds, mainIndex, sizeIds, prices);
 
         return "redirect:/admin/products";
     }
