@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content" class="p-6">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold"><i class="fa fa-users text-blue-600"></i> Správa používateľov</h1>
+    </div>
+
+    <div class="overflow-x-auto bg-white rounded-xl shadow">
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-gray-100 text-gray-600 uppercase text-sm">
+                <th class="p-4 border-b">ID</th>
+                <th class="p-4 border-b">Meno a Email</th>
+                <th class="p-4 border-b">Rola</th>
+                <th class="p-4 border-b">Status</th>
+                <th class="p-4 border-b text-center">Akcie</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}" class="hover:bg-gray-50 transition border-b align-middle">
+                <td class="p-4 font-mono text-gray-500" th:text="'#' + ${u.id}">#1</td>
+                <td class="p-4 text-sm">
+                    <span class="font-bold block" th:text="${u.firstName + ' ' + u.lastName}">Meno</span>
+                    <span class="text-gray-500" th:text="${u.email}">email@example.com</span>
+                </td>
+                <td class="p-4">
+                    <form th:action="@{/admin/users/update-role}" method="post" class="flex items-center space-x-2">
+                        <input type="hidden" name="userId" th:value="${u.id}"/>
+                        <select name="role" onchange="this.form.submit()"
+                                class="text-xs border rounded p-1 bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="GUEST" th:selected="${u.role == 'GUEST'}">GUEST</option>
+                            <option value="USER" th:selected="${u.role == 'USER'}">USER</option>
+                            <option value="ADMIN" th:selected="${u.role == 'ADMIN'}">ADMIN</option>
+                        </select>
+                    </form>
+                </td>
+                <td class="p-4 text-sm">
+                    <span th:if="${u.active}"
+                          class="px-2 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700 uppercase">
+                        Aktívny
+                    </span>
+                    <span th:unless="${u.active}"
+                          class="px-2 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-500 uppercase">
+                        Deaktivovaný
+                    </span>
+                </td>
+                <td class="p-4 text-center">
+                    <form th:if="${u.active}" th:action="@{/admin/users/delete/{id}(id=${u.id})}" method="post"
+                          onsubmit="return confirm('Naozaj chcete deaktivovať tohto používateľa?')">
+                        <button type="submit" class="text-red-500 hover:text-red-700 text-sm transition">
+                            <i class="fa fa-user-slash"></i> Deaktivovať
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</html>

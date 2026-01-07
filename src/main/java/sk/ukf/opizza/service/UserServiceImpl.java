@@ -9,6 +9,7 @@ import sk.ukf.opizza.entity.User;
 import sk.ukf.opizza.service.EmailService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -111,6 +112,29 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(null);
         user.setTokenExpiry(null);
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void updateUserRole(int userId, String role) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
+        user.setRole(role.toUpperCase());
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void softDeleteUser(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
+        user.setActive(false);
         userRepository.save(user);
     }
 }
