@@ -124,4 +124,56 @@ public class ProfileController {
             return "profile/change-password";
         }
     }
+
+    @GetMapping("/edit-address/{id}")
+    public String showEditAddressForm(@PathVariable("id") int id, @AuthenticationPrincipal UserPrincipal principal, Model model) {
+        User user = userService.getUserById(principal.getUser().getId());
+
+        Address address = user.getAllAddresses().stream()
+                .filter(a -> a.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Adresa nebola nájdená"));
+
+        model.addAttribute("address", address);
+        return "profile/edit-address";
+    }
+
+    @PostMapping("/edit-address/{id}")
+    public String updateAddress(@PathVariable("id") int id,
+                                @Valid @ModelAttribute("address") Address addressForm,
+                                BindingResult bindingResult,
+                                @AuthenticationPrincipal UserPrincipal principal) {
+        if (bindingResult.hasErrors()) {
+            return "profile/edit-address";
+        }
+
+        User user = userService.getUserById(principal.getUser().getId());
+        Address existingAddress = user.getAllAddresses().stream()
+                .filter(a -> a.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Adresa nebola nájdená"));
+
+        existingAddress.setCity(addressForm.getCity());
+        existingAddress.setStreet(addressForm.getStreet());
+        existingAddress.setHouse(addressForm.getHouse());
+        existingAddress.setZipCode(addressForm.getZipCode());
+        existingAddress.setFlat(addressForm.getFlat());
+
+        userService.saveUser(user);
+        return "redirect:/profile?addressUpdated";
+    }
+
+    @PostMapping("/delete-address")
+    public String deleteAddress(@RequestParam("addressId") int addressId, @AuthenticationPrincipal UserPrincipal principal) {
+        User user = userService.getUserById(principal.getUser().getId());
+
+        if (user.getDefaultAddress() != null && user.getDefaultAddress().getId() == addressId) {
+            return "redirect:/profile?error=cannotDeleteDefault";
+        }
+
+        user.getAllAddresses().removeIf(a -> a.getId() == addressId);
+        userService.saveUser(user);
+
+        return "redirect:/profile?addressDeleted";
+    }
 }
