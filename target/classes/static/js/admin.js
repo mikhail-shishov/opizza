@@ -27,25 +27,18 @@ if (nameInput && slugInput) {
 
 if (document.getElementById('productForm')) {
     document.getElementById('productForm').addEventListener('submit', function (e) {
-        // Remove empty file input rows to prevent FileCountLimitExceededException
-        // Empty file inputs still count as parts in multipart forms
-        // We need to remove them from DOM, not just disable them
         const fileInputs = document.querySelectorAll('input[type="file"][name="imageFiles"]');
         const inputsToRemove = [];
         fileInputs.forEach(input => {
             if (!input.files || input.files.length === 0) {
-                // Find the parent row container
                 const row = input.closest('div');
-                // Only remove upload rows (not existing image rows which have 'image-row' class)
                 if (row && !row.classList.contains('image-row') && row.querySelector('input[type="file"]')) {
                     inputsToRemove.push(row);
                 }
             }
         });
-        // Remove all empty rows
         inputsToRemove.forEach(row => row.remove());
 
-        // Variants
         const variantRows = document.querySelectorAll('.variant-row');
         let variants = [];
         variantRows.forEach(row => {
@@ -57,7 +50,6 @@ if (document.getElementById('productForm')) {
         });
         document.getElementById('variantData').value = variants.join(",");
 
-        // Existing Images
         const imageRows = document.querySelectorAll('.image-row');
         let imageIds = [];
         imageRows.forEach(row => {
@@ -68,7 +60,6 @@ if (document.getElementById('productForm')) {
         });
         document.getElementById('existingImageIdsData').value = imageIds.join(",");
 
-        // Tags
         const tagCheckboxes = document.querySelectorAll('.tag-checkbox:checked');
         let tagIds = [];
         tagCheckboxes.forEach(cb => {
