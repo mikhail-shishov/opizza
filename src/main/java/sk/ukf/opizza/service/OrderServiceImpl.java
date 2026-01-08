@@ -65,7 +65,6 @@ public class OrderServiceImpl implements OrderService {
         return saved;
     }
 
-
     @Override
     public List<Order> getUserOrderHistory(User user) {
         return orderRepository.findByUserIdOrderByOrderTimeDesc(user.getId());

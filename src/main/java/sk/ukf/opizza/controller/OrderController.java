@@ -71,4 +71,17 @@ public class OrderController {
 
         return ResponseEntity.ok(count);
     }
+
+    @PostMapping("/cancel")
+    public String cancelOrder(@RequestParam("orderId") int orderId, Authentication authentication) {
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        Order order = orderService.getAllOrders().stream().filter(o -> o.getOrderId() == orderId).findFirst().orElseThrow(() -> new RuntimeException("Objednávka sa nenašla"));
+
+        if (order.getUser().getId() == user.getId() && "PENDING".equals(order.getStatus())) {
+            orderService.updateStatus(orderId, "CANCELED");
+            return "redirect:/orders/history?canceled";
+        }
+
+        return "redirect:/orders/history?error";
+    }
 }
