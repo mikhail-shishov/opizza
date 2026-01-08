@@ -36,7 +36,7 @@
                         <p class="font-bold text-blue-600" th:text="${item.productVariant.price * item.quantity} + ' €'"></p>
                     </div>
                     <form th:action="@{'/cart/remove/' + ${item.id}}" method="post">
-                        <button type="submit" class="text-gray-400 transition delete-btn">
+                        <button type="submit" class="text-red-600 hover:text-red-700 transition delete-btn">
                             <i class="fa fa-trash-o fa-lg"></i>
                         </button>
                     </form>
@@ -50,7 +50,7 @@
 
             <div class="flex justify-between mt-8">
                 <a th:href="@{/}" class="text-gray-600"><i class="fa fa-arrow-left"></i> Pokračovať v nákupe</a>
-                <a th:href="@{/orders/checkout}" class="bg-green-600 text-white px-10 py-3 rounded-xl font-bold hover:bg-green-700 shadow-lg"> Prejsť k objednávke <i class="fa fa-chevron-right ml-2"></i>
+                <a th:href="@{/orders/checkout}" class="bg-blue-600 text-white px-10 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg"> Prejsť k objednávke <i class="fa fa-chevron-right ml-2"></i>
                 </a>
             </div>
         </div>

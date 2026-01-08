@@ -15,7 +15,7 @@
                     <label class="block text-gray-700 font-bold mb-2 text-lg">Vyberte si veľkosť:</label>
                     <div class="grid grid-cols-1 gap-3">
                         <div th:each="variant : ${pizza.variants}"
-                             class="border rounded-lg p-4 flex justify-between items-center transition hover:bg-blue-50">
+                             class="border border-gray-200 rounded-lg p-4 flex justify-between items-center transition hover:bg-blue-50">
                             <input type="radio" name="variantId"
                                    th:id="'variant-' + ${variant.variantId}"
                                    th:value="${variant.variantId}"
@@ -32,7 +32,7 @@
 
                 <div class="flex items-center space-x-4">
                     <input type="number" name="quantity" value="1" min="1"
-                           class="w-20 border rounded-lg p-2 text-center text-lg">
+                           class="w-20 border border-gray-300 rounded-lg p-2 text-center text-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none">
                     <button type="submit"
                             class="flex-grow bg-blue-600 text-white py-3 rounded-lg font-bold text-lg transition">
                         <i class="fa fa-cart-plus mr-2"></i> Pridať do košíka

@@ -7,17 +7,17 @@
     <div class="overflow-x-auto bg-white rounded-xl shadow">
         <table class="w-full text-left border-collapse">
             <thead>
-            <tr class="bg-gray-100 text-gray-600 uppercase text-sm">
-                <th class="p-4 border-b">ID</th>
-                <th class="p-4 border-b">Zákazník</th>
-                <th class="p-4 border-b">Prijaté</th>
-                <th class="p-4 border-b">Suma</th>
-                <th class="p-4 border-b">História stavov</th>
-                <th class="p-4 border-b text-center">Akcia</th>
+            <tr class="bg-gray-50 text-gray-600 uppercase text-sm">
+                <th class="p-4 border-b border-gray-200">ID</th>
+                <th class="p-4 border-b border-gray-200">Zákazník</th>
+                <th class="p-4 border-b border-gray-200">Prijaté</th>
+                <th class="p-4 border-b border-gray-200">Suma</th>
+                <th class="p-4 border-b border-gray-200">História stavov</th>
+                <th class="p-4 border-b border-gray-200 text-center">Akcia</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition border-b align-top">
+            <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition border-b border-gray-200 align-top">
                 <td class="p-4 font-bold" th:text="'#' + ${order.orderId}">#1</td>
                 <td class="p-4 text-sm">
                     <span class="font-bold" th:text="${order.user.firstName} + ' ' + ${order.user.lastName}"></span>
@@ -39,7 +39,7 @@
                     <form th:action="@{/admin/orders/update-status}" method="post" class="flex flex-col items-center">
                         <input type="hidden" name="orderId" th:value="${order.orderId}">
                         <select name="status" onchange="this.form.submit()"
-                                class="text-xs border rounded p-1 w-full bg-white">
+                                class="text-xs border border-gray-300 rounded-lg p-1 w-full bg-white focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none">
 
                             <option value="PENDING" th:selected="${order.status == 'PENDING'}">⌛ Čaká (Pending)</option>
 

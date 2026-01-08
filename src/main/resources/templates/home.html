@@ -7,16 +7,16 @@
     <div class="flex space-x-4 mb-10">
         <div th:each="cat : ${categories}">
             <a th:href="@{/(category=${cat.id})}"
-               class="px-4 py-2 bg-white border rounded-full transition"
+               class="px-4 py-2 bg-white border border-gray-200 rounded-lg transition hover:bg-gray-50"
                th:text="${cat.name}">Kategória</a>
         </div>
     </div>
 
-    <div th:if="${pizzas.empty}" class="text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+    <div th:if="${pizzas.empty}" class="text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-200">
         <div class="text-5xl mb-4">🍕</div>
         <h2 class="text-2xl font-bold text-gray-700">Prepáčte, nemáme túto položku :(</h2>
         <a th:href="@{/}"
-           class="inline-block mt-6 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+           class="inline-block mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
             Zobraziť celé menu
         </a>
     </div>
@@ -46,7 +46,7 @@
                     </span>
 
                     <a th:href="@{'/pizza/' + ${pizza.slug}}"
-                       class="bg-red-600 text-white px-4 py-2 rounded-lg transition">
+                       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
                         Vybrať
                     </a>
                 </div>

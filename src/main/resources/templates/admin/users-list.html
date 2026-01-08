@@ -9,7 +9,7 @@
         <div class="relative">
             <input type="text" id="userSearch" onkeyup="filterUsers()"
                    placeholder="Hľadať meno alebo email..."
-                   class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-80">
+                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none w-80">
             <i class="fa fa-search absolute left-3 top-3 text-gray-400"></i>
         </div>
     </div>
@@ -17,16 +17,16 @@
     <div class="overflow-x-auto bg-white rounded-xl shadow">
         <table class="w-full text-left border-collapse" id="userTable">
             <thead>
-            <tr class="bg-gray-100 text-gray-600 uppercase text-sm">
-                <th class="p-4 border-b">ID</th>
-                <th class="p-4 border-b">Meno a Email</th>
-                <th class="p-4 border-b">Rola</th>
-                <th class="p-4 border-b">Status</th>
-                <th class="p-4 border-b text-center">Akcie</th>
+            <tr class="bg-gray-50 text-gray-600 uppercase text-sm">
+                <th class="p-4 border-b border-gray-200">ID</th>
+                <th class="p-4 border-b border-gray-200">Meno a Email</th>
+                <th class="p-4 border-b border-gray-200">Rola</th>
+                <th class="p-4 border-b border-gray-200">Status</th>
+                <th class="p-4 border-b border-gray-200 text-center">Akcie</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="u : ${users}" class="user-row hover:bg-gray-50 transition border-b align-middle" th:classappend="${u.role == 'ADMIN' or u.role == 'COOK' or u.role == 'COURIER' ? 'bg-blue-50' : 'bg-white'}">
+            <tr th:each="u : ${users}" class="user-row hover:bg-gray-50 transition border-b border-gray-200 align-middle" th:classappend="${u.role == 'ADMIN' or u.role == 'COOK' or u.role == 'COURIER' ? 'bg-blue-50' : 'bg-white'}">
                 <td class="p-4 font-mono text-gray-500" th:text="'#' + ${u.id}">#1</td>
                 <td class="p-4 text-sm">
                     <div class="search-data">
@@ -38,7 +38,7 @@
                     <form th:action="@{/admin/users/update-role}" method="post" class="flex items-center space-x-2">
                         <input type="hidden" name="userId" th:value="${u.id}"/>
                         <select name="role" onchange="this.form.submit()"
-                                class="text-xs border rounded p-1 bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                                class="text-xs border border-gray-300 rounded-lg p-1 bg-white focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none">
                             <option value="USER" th:selected="${u.role == 'USER'}">USER</option>
                             <option value="COOK" th:selected="${u.role == 'COOK'}">COOK</option>
                             <option value="COURIER" th:selected="${u.role == 'COURIER'}">COURIER</option>
@@ -59,7 +59,7 @@
                 <td class="p-4 text-center">
                     <form th:if="${u.active}" th:action="@{/admin/users/delete/{id}(id=${u.id})}" method="post"
                           onsubmit="return confirm('Naozaj chcete deaktivovať tohto používateľa?')">
-                        <button type="submit" class="text-red-500 hover:text-red-700 text-sm transition">
+                        <button type="submit" class="text-red-600 hover:text-red-700 text-sm transition">
                             <i class="fa fa-user-slash"></i> Deaktivovať
                         </button>
                     </form>
