@@ -12,4 +12,6 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 
     @Transactional
     void deleteByProductProductId(int productId);
+    
+    long countBySizeId(int sizeId);
 }

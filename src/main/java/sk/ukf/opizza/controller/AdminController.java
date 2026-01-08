@@ -222,4 +222,25 @@ public class AdminController {
 
         return name.toLowerCase().replace('ľ', 'l').replace('š', 's').replace('č', 'c').replace('ť', 't').replace('ž', 'z').replace('ý', 'y').replace('á', 'a').replace('í', 'i').replace('é', 'e').replace('ď', 'd').replace('ň', 'n').replace('ó', 'o').replace('ô', 'o').replace('ŕ', 'r').replace('ĺ', 'l').replaceAll("[^a-z0-9\\s]", "").replaceAll("\\s+", "-").replaceAll("-+", "-").trim();
     }
+
+    @PostMapping("/sizes/delete/{id}")
+    @ResponseBody
+    public java.util.Map<String, Object> deleteSize(@PathVariable("id") int id) {
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        try {
+            long count = variantRepository.countBySizeId(id);
+            if (count > 0) {
+                response.put("success", false);
+                response.put("error", "Nemožno vymazať veľkosť, ktorá sa používa v existujúcich produktoch.");
+                return response;
+            }
+            sizeService.deleteSize(id);
+            response.put("success", true);
+            return response;
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", "Chyba pri odstraňovaní veľkosti: " + e.getMessage());
+            return response;
+        }
+    }
 }

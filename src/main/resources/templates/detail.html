@@ -24,7 +24,7 @@
                             <label th:for="'variant-' + ${variant.variantId}"
                                    class="flex justify-between items-center w-full cursor-pointer">
                                 <span th:text="${variant.size.name}" class="font-medium">Veľkosť</span>
-                                <span class="font-bold text-blue-600" th:text="${variant.price} + ' €'">0.00 €</span>
+                                <span class="font-bold text-blue-600" th:text="${#numbers.formatDecimal(variant.price, 1, 2) + ' €'}">0.00 €</span>
                             </label>
                         </div>
                     </div>

@@ -11,7 +11,7 @@
             <input type="hidden" name="id" id="tagId">
 
             <input type="text" name="name" id="tagName" placeholder="Názov tagu" required
-                   class="flex-grow border rounded-lg px-4 py-2">
+                   class="flex-grow border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none">
 
             <div class="flex items-center gap-2">
                 <label class="text-sm">Farba</label>
@@ -21,7 +21,7 @@
             <button type="submit" id="tagSubmitBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                 Uložiť
             </button>
-            <button type="button" id="tagCancelBtn" onclick="resetTagForm()" class="hidden bg-gray-400 text-white px-4 py-2 rounded-lg">
+            <button type="button" id="tagCancelBtn" onclick="resetTagForm()" class="hidden bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
                 Zrušiť
             </button>
         </form>
@@ -35,23 +35,23 @@
                     <th class="p-4 text-right">Akcie</th>
                 </tr>
                 </thead>
-                <tr th:each="t : ${tags}" class="border-b">
+                <tr th:each="t : ${tags}" class="border-b border-gray-200">
                     <td class="p-4 font-medium" th:text="${t.name}">Gluten-free</td>
                     <td class="p-4">
                         <span th:text="${t.name}"
                               th:style="'background-color:' + ${t.colorHex}"
-                              class="px-2 py-1 rounded text-white text-xs">
+                              class="px-2 py-1 rounded-lg text-white text-xs">
                         </span>
                     </td>
                     <td class="p-4 text-right flex justify-end gap-3">
-                        <button type="button" class="text-blue-600 hover:underline"
+                        <button type="button" class="text-blue-600 hover:text-blue-700 hover:underline"
                                 th:onclick="editTag([[${t.id}]], [[${t.name}]], [[${t.colorHex}]])">
                             Upraviť
                         </button>
 
                         <form th:action="@{'/admin/tags/delete/' + ${t.id}}" method="post" onsubmit="return confirm('Naozaj odstrániť tento tag?')">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                            <button class="text-red-500 hover:underline">Odstrániť</button>
+                            <button class="text-red-600 hover:text-red-700 hover:underline">Odstrániť</button>
                         </form>
                     </td>
                 </tr>

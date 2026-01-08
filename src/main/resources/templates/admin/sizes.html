@@ -4,8 +4,13 @@
     <div class="max-w-4xl mx-auto">
         <h1 class="text-3xl font-bold mb-8">Správa veľkostí</h1>
 
+        <div id="error-message" class="mb-4 p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 hidden">
+            <span id="error-text"></span>
+        </div>
+
         <form id="sizeForm" th:action="@{/admin/sizes/save}" method="post"
               class="bg-white p-6 rounded-xl shadow mb-8 flex gap-4 items-center">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" id="csrfToken">
 
             <input type="hidden" name="id" id="sizeId">
 
@@ -36,19 +41,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="s : ${sizes}" class="border-b border-gray-200 last:border-0">
+                <tr th:each="s : ${sizes}" class="border-b border-gray-200 last:border-0 size-row" th:data-size-id="${s.id}">
                     <td class="p-4 font-medium text-gray-800" th:text="${s.name}">Klasická 32cm</td>
                     <td class="p-4 text-gray-600" th:text="${s.weightGrams} + ' g'">550 g</td>
                     <td class="p-4 text-right flex justify-end gap-4">
-                        <button type="button" class="text-blue-600 hover:text-blue-700 hover:underline font-medium"
-                                th:onclick="|editSize('${s.id}', '${s.name}', '${s.weightGrams}')|">
+                        <button type="button" class="text-blue-600 hover:text-blue-700 hover:underline font-medium edit-size-btn"
+                                th:data-size-id="${s.id}"
+                                th:data-size-name="${s.name}"
+                                th:data-size-weight="${s.weightGrams}">
                             Upraviť
                         </button>
 
-                        <form th:action="@{'/admin/sizes/delete/' + ${s.id}}" method="post"
-                              onsubmit="return confirm('Naozaj odstrániť túto veľkosť? Odstránenie môže ovplyvniť existujúce produkty.')">
-                            <button class="text-red-600 hover:text-red-700 hover:underline font-medium">Odstrániť</button>
-                        </form>
+                        <button type="button" class="text-red-600 hover:text-red-700 hover:underline font-medium delete-size-btn"
+                                th:data-size-id="${s.id}">
+                            Odstrániť
+                        </button>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(sizes)}">

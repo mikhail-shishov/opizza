@@ -174,3 +174,67 @@ if (document.getElementById('order-badge') || document.getElementById('order-bad
     updateOrderNotifications();
     setInterval(updateOrderNotifications, 60000);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const editSizeButtons = document.querySelectorAll('.edit-size-btn');
+    editSizeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-size-id');
+            const name = this.getAttribute('data-size-name');
+            const weight = this.getAttribute('data-size-weight');
+            editSize(id, name, weight);
+        });
+    });
+
+    const deleteSizeButtons = document.querySelectorAll('.delete-size-btn');
+    deleteSizeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (!confirm('Naozaj odstrániť túto veľkosť? Odstránenie môže ovplyvniť existujúce produkty.')) {
+                return;
+            }
+            
+            const sizeId = this.getAttribute('data-size-id');
+            const row = this.closest('.size-row');
+            const errorDiv = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+
+            errorDiv.classList.add('hidden');
+
+            const csrfInput = document.getElementById('csrfToken');
+            const csrfToken = csrfInput ? csrfInput.value : '';
+            
+            const formData = new FormData();
+            if (csrfInput) {
+                formData.append(csrfInput.name, csrfToken);
+            }
+            
+            fetch('/admin/sizes/delete/' + sizeId, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    row.remove();
+
+                    const tbody = document.querySelector('tbody');
+                    if (tbody && tbody.querySelectorAll('.size-row').length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-gray-400 italic">Neboli nájdené žiadne veľkosti.</td></tr>';
+                    }
+                } else {
+                    errorText.textContent = data.error || 'Chyba pri odstraňovaní veľkosti.';
+                    errorDiv.classList.remove('hidden');
+                    errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            })
+            .catch(error => {
+                errorText.textContent = 'Chyba pri odstraňovaní veľkosti.';
+                errorDiv.classList.remove('hidden');
+                errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        });
+    });
+});
