@@ -30,35 +30,28 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User saveUser(User incoming) {
-        // new registration
         if (incoming.getId() == 0) {
             if (userRepository.existsByEmail(incoming.getEmail())) {
                 throw new IllegalArgumentException("Používateľ s týmto emailom už existuje.");
             }
-
             if (!ValidationConfig.isValidPassword(incoming.getPassword())) {
                 throw new IllegalArgumentException("Heslo musí mať aspoň 8 znakov, jedno veľké písmeno a jedno číslo");
             }
-
             incoming.setPassword(passwordEncoder.encode(incoming.getPassword()));
-
             if (incoming.getRole() == null) incoming.setRole("USER");
             incoming.setActive(true);
             return userRepository.save(incoming);
         }
 
-        User existing = userRepository.findById(incoming.getId()).orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
+        User existing = userRepository.findById(incoming.getId())
+                .orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
 
         existing.setFirstName(incoming.getFirstName());
         existing.setLastName(incoming.getLastName());
         existing.setPhone(incoming.getPhone());
-        existing.setAvatarUrl(incoming.getAvatarUrl());
 
-        if (incoming.getPassword() != null && !incoming.getPassword().isEmpty() && !passwordEncoder.matches(incoming.getPassword(), existing.getPassword())) {
-            if (!ValidationConfig.isValidPassword(incoming.getPassword())) {
-                throw new IllegalArgumentException("Nové heslo nespĺňa požiadavky.");
-            }
-            existing.setPassword(passwordEncoder.encode(incoming.getPassword()));
+        if (incoming.getAvatarUrl() != null) {
+            existing.setAvatarUrl(incoming.getAvatarUrl());
         }
 
         if (incoming.getDefaultAddress() != null) {
@@ -81,7 +74,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void resetPassword(String email, String newPassword) {
-        User user = userRepository.findByEmail(email.trim()).orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
+        User user = userRepository.findByEmail(email.trim())
+                .orElseThrow(() -> new RuntimeException("Používateľ nebol nájdený"));
+
+        if (!ValidationConfig.isValidPassword(newPassword)) {
+            throw new IllegalArgumentException("Heslo nespĺňa bezpečnostné požiadavky.");
+        }
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);

@@ -24,11 +24,11 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-//    @NotBlank(message = "Heslo je povinné")
-//    @Pattern(
-//            regexp = "^(?=.*[A-Z])(?=.*\\d).{8,}$",
-//            message = "Heslo musí mať aspoň 8 znakov, jedno veľké písmeno a jedno číslo"
-//    )
+    @NotBlank(message = "Heslo je povinné")
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*\\d).{8,}$",
+            message = "Heslo musí mať aspoň 8 znakov, jedno veľké písmeno a jedno číslo"
+    )
     private String password;
 
     @NotBlank(message = "Meno nesmie byť prázdne")

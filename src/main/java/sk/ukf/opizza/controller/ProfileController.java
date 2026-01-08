@@ -58,10 +58,6 @@ public class ProfileController {
         existingUser.setLastName(formUser.getLastName());
         existingUser.setPhone(formUser.getPhone());
 
-        if (formUser.getPassword() != null && !formUser.getPassword().trim().isEmpty()) {
-            existingUser.setPassword(formUser.getPassword());
-        }
-
         userService.saveUser(existingUser);
         return "redirect:/profile?success";
     }
@@ -100,5 +96,24 @@ public class ProfileController {
         userService.saveUser(user);
 
         return "redirect:/profile?addressAdded";
+    }
+
+    @GetMapping("/change-password")
+    public String showChangePasswordForm() {
+        return "profile/change-password";
+    }
+
+    @PostMapping("/change-password")
+    public String processChangePassword(@RequestParam("newPassword") String newPassword, @AuthenticationPrincipal UserPrincipal principal, Model model) {
+        try {
+            userService.resetPassword(principal.getUser().getEmail(), newPassword);
+            return "redirect:/profile?success";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "profile/change-password";
+        } catch (Exception e) {
+            model.addAttribute("error", "Vyskytla sa neočakávaná chyba.");
+            return "profile/change-password";
+        }
     }
 }
