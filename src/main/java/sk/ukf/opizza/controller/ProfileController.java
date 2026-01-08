@@ -1,9 +1,11 @@
 package sk.ukf.opizza.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sk.ukf.opizza.config.UserPrincipal;
 import sk.ukf.opizza.entity.Address;
@@ -82,9 +84,15 @@ public class ProfileController {
     }
 
     @PostMapping("/add-address")
-    public String saveAddress(@ModelAttribute("address") Address address, @AuthenticationPrincipal UserPrincipal principal) {
-        User user = userService.getUserById(principal.getUser().getId());
+    public String saveAddress(@Valid @ModelAttribute("address") Address address,
+                              BindingResult bindingResult,
+                              @AuthenticationPrincipal UserPrincipal principal) {
 
+        if (bindingResult.hasErrors()) {
+            return "profile/add-address";
+        }
+
+        User user = userService.getUserById(principal.getUser().getId());
         address.setUser(user);
 
         if (user.getDefaultAddress() == null) {
