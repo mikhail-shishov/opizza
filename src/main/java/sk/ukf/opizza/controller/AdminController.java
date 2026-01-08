@@ -65,25 +65,15 @@ public class AdminController {
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(
-            @RequestParam("productId") int productId,
-            @RequestParam("name") String name,
-            @RequestParam("category") Integer categoryId,
-            @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "slug", required = false) String slug,
-            @RequestParam(value = "available", defaultValue = "false") boolean available,
-            @RequestParam(value = "tagData", required = false) String tagData,
-            @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles,
-            @RequestParam(value = "existingImageIdsData", required = false) String existingImageIdsData,
-            @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex,
-            @RequestParam(value = "variantData", required = false) String variantData) {
+    public String saveProduct(@RequestParam("productId") int productId, @RequestParam("name") String name, @RequestParam("category") Integer categoryId, @RequestParam(value = "description", required = false) String description, @RequestParam(value = "slug", required = false) String slug, @RequestParam(value = "available", defaultValue = "false") boolean available, @RequestParam(value = "tagData", required = false) String tagData, @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles, @RequestParam(value = "existingImageIdsData", required = false) String existingImageIdsData, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex, @RequestParam(value = "variantData", required = false) String variantData) {
 
         List<Integer> existingImageIds = new ArrayList<>();
         if (existingImageIdsData != null && !existingImageIdsData.isEmpty()) {
             for (String id : existingImageIdsData.split(",")) {
                 try {
                     existingImageIds.add(Integer.parseInt(id));
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
 
@@ -97,7 +87,8 @@ public class AdminController {
                     try {
                         sizeIds.add(Integer.parseInt(parts[0]));
                         prices.add(Double.parseDouble(parts[1]));
-                    } catch (NumberFormatException ignored) {}
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
             }
         }
@@ -107,7 +98,8 @@ public class AdminController {
             for (String id : tagData.split(",")) {
                 try {
                     tagIds.add(Integer.parseInt(id));
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
 
@@ -141,7 +133,9 @@ public class AdminController {
                         if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
                         Files.write(uploadPath.resolve(fileName), file.getBytes());
                         finalUrls.add("/uploads/products/" + fileName);
-                    } catch (IOException e) { e.printStackTrace(); }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -211,7 +205,7 @@ public class AdminController {
     @GetMapping("/sizes")
     public String listSizes(Model model) {
         model.addAttribute("sizes", sizeService.getAllSizes());
-        return "admin/sizes"; // We will create this HTML file next
+        return "admin/sizes";
     }
 
     @PostMapping("/sizes/save")

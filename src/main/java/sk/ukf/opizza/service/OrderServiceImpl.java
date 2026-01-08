@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order saved = orderRepository.save(order);
 
-        emailService.sendEmail(user.getEmail(), "Potvrdenie objednávky č. " + saved.getOrderId(), "Vaša objednavka bola prijatá! Celková suma je " + saved.getTotalPrice() + " €");
+        emailService.sendEmail(user.getEmail(), "Potvrdenie objednávky č. " + saved.getOrderId(),"Vaša objednavka bola prijatá! Celková suma je " + String.format("%.2f", saved.getTotalPrice()) + " €");
 
         cartService.clearCart(user);
         return saved;

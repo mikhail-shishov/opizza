@@ -72,8 +72,7 @@ public class PizzaServiceImpl implements PizzaService {
             managedProduct.setDescription(product.getDescription());
             managedProduct.setAvailable(product.isAvailable());
             managedProduct.setSlug(product.getSlug());
-            
-            // Ensure image_url is set (legacy database field)
+
             if (managedProduct.getImageUrl() == null) {
                 managedProduct.setImageUrl("/img/pizza_pictures/placeholder.webp");
             }
@@ -82,7 +81,6 @@ public class PizzaServiceImpl implements PizzaService {
             cat.setId(product.getCategory().getId());
             managedProduct.setCategory(cat);
 
-            // Correctly manage tags
             if (product.getTags() != null) {
                 managedProduct.getTags().clear();
                 for (Tag detachedTag : product.getTags()) {
@@ -93,11 +91,9 @@ public class PizzaServiceImpl implements PizzaService {
             }
         } else {
             managedProduct = product;
-            // Set default image_url for new products (legacy database field)
             if (managedProduct.getImageUrl() == null) {
                 managedProduct.setImageUrl("/img/pizza_pictures/placeholder.webp");
             }
-            // For new product, also ensure tags are properly attached
             if (product.getTags() != null) {
                 List<Tag> attachedTags = new ArrayList<>();
                 for (Tag detachedTag : product.getTags()) {
@@ -107,7 +103,6 @@ public class PizzaServiceImpl implements PizzaService {
             }
         }
 
-        // Handle Images
         if (managedProduct.getProductId() != 0) {
             if (existingImageIds == null || existingImageIds.isEmpty()) {
                 managedProduct.getImages().clear();
@@ -129,7 +124,6 @@ public class PizzaServiceImpl implements PizzaService {
             managedProduct.getImages().get(i).setMain(i == mainIndex);
         }
 
-        // Handle Variants
         if (sizeIds != null && prices != null) {
             for (int i = 0; i < sizeIds.size(); i++) {
                 int sizeId = sizeIds.get(i);

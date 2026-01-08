@@ -31,7 +31,6 @@ public class Product {
     @Column(unique = true)
     private String slug;
 
-    // Legacy field for database compatibility - not used in application logic
     @Column(name = "image_url", insertable = true, updatable = true)
     private String imageUrl;
 
