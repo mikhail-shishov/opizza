@@ -66,36 +66,82 @@ public class AdminController {
 
     @PostMapping("/products/save")
     public String saveProduct(
-            @ModelAttribute("product") Product product,
-            @RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
-            @RequestParam(value = "existingImageIds", required = false) List<Integer> existingImageIds,
+            @RequestParam("productId") int productId,
+            @RequestParam("name") String name,
+            @RequestParam("category") Integer categoryId,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "slug", required = false) String slug,
+            @RequestParam(value = "available", defaultValue = "false") boolean available,
+            @RequestParam(value = "tagData", required = false) String tagData,
+            @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles,
+            @RequestParam(value = "existingImageIdsData", required = false) String existingImageIdsData,
             @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex,
-            @RequestParam(value = "sizeIds", required = false) List<Integer> sizeIds,
-            @RequestParam(value = "prices", required = false) List<Double> prices) {
-        if (product.getSlug() == null || product.getSlug().trim().isEmpty()) {
-            product.setSlug(generateSlug(product.getName()));
+            @RequestParam(value = "variantData", required = false) String variantData) {
+
+        List<Integer> existingImageIds = new ArrayList<>();
+        if (existingImageIdsData != null && !existingImageIdsData.isEmpty()) {
+            for (String id : existingImageIdsData.split(",")) {
+                try {
+                    existingImageIds.add(Integer.parseInt(id));
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+
+        List<Integer> sizeIds = new ArrayList<>();
+        List<Double> prices = new ArrayList<>();
+        if (variantData != null && !variantData.isEmpty()) {
+            String[] pairs = variantData.split(",");
+            for (String pair : pairs) {
+                String[] parts = pair.split(":");
+                if (parts.length == 2) {
+                    try {
+                        sizeIds.add(Integer.parseInt(parts[0]));
+                        prices.add(Double.parseDouble(parts[1]));
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+        }
+
+        List<Integer> tagIds = new ArrayList<>();
+        if (tagData != null && !tagData.isEmpty()) {
+            for (String id : tagData.split(",")) {
+                try {
+                    tagIds.add(Integer.parseInt(id));
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+
+        Product product = new Product();
+        product.setProductId(productId);
+        product.setName(name);
+        product.setDescription(description);
+        product.setAvailable(available);
+        product.setSlug(slug != null && !slug.isEmpty() ? slug : generateSlug(name));
+
+        Category cat = new Category();
+        cat.setId(categoryId);
+        product.setCategory(cat);
+
+        if (tagIds != null) {
+            List<Tag> tags = tagIds.stream().map(id -> {
+                Tag t = new Tag();
+                t.setId(id);
+                return t;
+            }).toList();
+            product.setTags(tags);
         }
 
         List<String> finalUrls = new ArrayList<>();
-
         if (imageFiles != null) {
             for (MultipartFile file : imageFiles) {
                 if (!file.isEmpty()) {
                     try {
                         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
                         Path uploadPath = Paths.get("user-pics", "products");
-
-                        if (!Files.exists(uploadPath)) {
-                            Files.createDirectories(uploadPath);
-                        }
-
-                        Path filePath = uploadPath.resolve(fileName);
-                        Files.write(filePath, file.getBytes());
-
+                        if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+                        Files.write(uploadPath.resolve(fileName), file.getBytes());
                         finalUrls.add("/uploads/products/" + fileName);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    } catch (IOException e) { e.printStackTrace(); }
                 }
             }
         }

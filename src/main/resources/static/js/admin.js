@@ -25,6 +25,59 @@ if (nameInput && slugInput) {
     });
 }
 
+if (document.getElementById('productForm')) {
+    document.getElementById('productForm').addEventListener('submit', function (e) {
+        // Remove empty file input rows to prevent FileCountLimitExceededException
+        // Empty file inputs still count as parts in multipart forms
+        // We need to remove them from DOM, not just disable them
+        const fileInputs = document.querySelectorAll('input[type="file"][name="imageFiles"]');
+        const inputsToRemove = [];
+        fileInputs.forEach(input => {
+            if (!input.files || input.files.length === 0) {
+                // Find the parent row container
+                const row = input.closest('div');
+                // Only remove upload rows (not existing image rows which have 'image-row' class)
+                if (row && !row.classList.contains('image-row') && row.querySelector('input[type="file"]')) {
+                    inputsToRemove.push(row);
+                }
+            }
+        });
+        // Remove all empty rows
+        inputsToRemove.forEach(row => row.remove());
+
+        // Variants
+        const variantRows = document.querySelectorAll('.variant-row');
+        let variants = [];
+        variantRows.forEach(row => {
+            const sizeId = row.getAttribute('data-size-id');
+            const price = row.querySelector('.variant-price').value;
+            if (price && price > 0) {
+                variants.push(sizeId + ":" + price);
+            }
+        });
+        document.getElementById('variantData').value = variants.join(",");
+
+        // Existing Images
+        const imageRows = document.querySelectorAll('.image-row');
+        let imageIds = [];
+        imageRows.forEach(row => {
+            const imgId = row.getAttribute('data-img-id');
+            if (imgId) {
+                imageIds.push(imgId);
+            }
+        });
+        document.getElementById('existingImageIdsData').value = imageIds.join(",");
+
+        // Tags
+        const tagCheckboxes = document.querySelectorAll('.tag-checkbox:checked');
+        let tagIds = [];
+        tagCheckboxes.forEach(cb => {
+            tagIds.push(cb.value);
+        });
+        document.getElementById('tagData').value = tagIds.join(",");
+    });
+}
+
 function addImageUploadRow() {
     const list = document.getElementById('image-list');
     const index = list.querySelectorAll('input[type="radio"]').length;
@@ -110,7 +163,7 @@ function filterUsers() {
 }
 
 function updateOrderNotifications() {
-    fetch('/orders/api/notifications/count') // Check path matches @RequestMapping("/orders")
+    fetch('/orders/api/notifications/count')
         .then(response => response.json())
         .then(count => {
             const badges = document.querySelectorAll('.order-badge-count, #order-badge-mobile');
@@ -128,5 +181,5 @@ function updateOrderNotifications() {
 
 if (document.getElementById('order-badge') || document.getElementById('order-badge-mobile')) {
     updateOrderNotifications();
-    setInterval(updateOrderNotifications, 30000);
+    setInterval(updateOrderNotifications, 60000);
 }

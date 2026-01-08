@@ -23,7 +23,7 @@ public class Product {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();
 
     private boolean isAvailable;
@@ -31,12 +31,24 @@ public class Product {
     @Column(unique = true)
     private String slug;
 
+    // Legacy field for database compatibility - not used in application logic
+    @Column(name = "image_url", insertable = true, updatable = true)
+    private String imageUrl;
+
     public String getSlug() {
         return slug;
     }
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Double getPriceForSize(int sizeId) {
@@ -48,7 +60,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariant> variants = new ArrayList<>();
 
     @ManyToMany

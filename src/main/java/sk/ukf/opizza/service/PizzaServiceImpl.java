@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import sk.ukf.opizza.dao.ProductRepository;
 import sk.ukf.opizza.dao.ProductVariantRepository;
 import sk.ukf.opizza.dao.SizeRepository;
+import sk.ukf.opizza.dao.TagRepository;
 import sk.ukf.opizza.entity.*;
 
 import java.util.ArrayList;
@@ -56,67 +57,105 @@ public class PizzaServiceImpl implements PizzaService {
         productRepository.save(pizza);
     }
 
+    @Autowired
+    private TagRepository tagRepository;
+
     @Transactional
     @Override
     public void saveProductFull(Product product, List<String> imageUrls, List<Integer> existingImageIds, int mainIndex, List<Integer> sizeIds, List<Double> prices) {
-        Product existingProduct;
-
+        Product managedProduct;
         if (product.getProductId() != 0) {
-            existingProduct = productRepository.findById(product.getProductId()).orElse(product);
-            existingProduct.setName(product.getName());
-            existingProduct.setDescription(product.getDescription());
-            existingProduct.setCategory(product.getCategory());
-            existingProduct.setSlug(product.getSlug());
-            existingProduct.setAvailable(product.isAvailable());
-            existingProduct.setTags(product.getTags());
-        } else {
-            existingProduct = product;
-        }
+            managedProduct = productRepository.findById(product.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        if (existingProduct.getProductId() != 0) {
-            if (existingImageIds == null || existingImageIds.isEmpty()) {
-                existingProduct.getImages().clear();
+            managedProduct.setName(product.getName());
+            managedProduct.setDescription(product.getDescription());
+            managedProduct.setAvailable(product.isAvailable());
+            managedProduct.setSlug(product.getSlug());
+            
+            // Ensure image_url is set (legacy database field)
+            if (managedProduct.getImageUrl() == null) {
+                managedProduct.setImageUrl("/img/pizza_pictures/placeholder.webp");
+            }
+
+            Category cat = new Category();
+            cat.setId(product.getCategory().getId());
+            managedProduct.setCategory(cat);
+
+            // Correctly manage tags
+            if (product.getTags() != null) {
+                managedProduct.getTags().clear();
+                for (Tag detachedTag : product.getTags()) {
+                    managedProduct.getTags().add(tagRepository.findById(detachedTag.getId()).orElseThrow());
+                }
             } else {
-                existingProduct.getImages().removeIf(img -> !existingImageIds.contains(img.getId()));
+                managedProduct.getTags().clear();
+            }
+        } else {
+            managedProduct = product;
+            // Set default image_url for new products (legacy database field)
+            if (managedProduct.getImageUrl() == null) {
+                managedProduct.setImageUrl("/img/pizza_pictures/placeholder.webp");
+            }
+            // For new product, also ensure tags are properly attached
+            if (product.getTags() != null) {
+                List<Tag> attachedTags = new ArrayList<>();
+                for (Tag detachedTag : product.getTags()) {
+                    attachedTags.add(tagRepository.findById(detachedTag.getId()).orElseThrow());
+                }
+                managedProduct.setTags(attachedTags);
             }
         }
 
-        if (imageUrls != null && !imageUrls.isEmpty()) {
+        // Handle Images
+        if (managedProduct.getProductId() != 0) {
+            if (existingImageIds == null || existingImageIds.isEmpty()) {
+                managedProduct.getImages().clear();
+            } else {
+                managedProduct.getImages().removeIf(img -> !existingImageIds.contains(img.getId()));
+            }
+        }
+
+        if (imageUrls != null) {
             for (String url : imageUrls) {
                 ProductImage img = new ProductImage();
                 img.setUrl(url);
-                img.setProduct(existingProduct);
-                existingProduct.getImages().add(img);
+                img.setProduct(managedProduct);
+                managedProduct.getImages().add(img);
             }
         }
 
-        for (int i = 0; i < existingProduct.getImages().size(); i++) {
-            existingProduct.getImages().get(i).setMain(i == mainIndex);
+        for (int i = 0; i < managedProduct.getImages().size(); i++) {
+            managedProduct.getImages().get(i).setMain(i == mainIndex);
         }
 
-        Product savedProduct = productRepository.save(existingProduct);
-
+        // Handle Variants
         if (sizeIds != null && prices != null) {
-            List<ProductVariant> currentDbVariants = variantRepository.findByProductProductId(savedProduct.getProductId());
-
             for (int i = 0; i < sizeIds.size(); i++) {
+                int sizeId = sizeIds.get(i);
                 Double price = prices.get(i);
-                int currentSizeId = sizeIds.get(i);
 
-                ProductVariant variant = currentDbVariants.stream().filter(v -> v.getSize().getId() == currentSizeId).findFirst().orElse(new ProductVariant());
+                ProductVariant variant = managedProduct.getVariants().stream()
+                        .filter(v -> v.getSize().getId() == sizeId)
+                        .findFirst()
+                        .orElse(null);
 
                 if (price != null && price > 0) {
-                    variant.setProduct(savedProduct);
+                    if (variant == null) {
+                        variant = new ProductVariant();
+                        variant.setProduct(managedProduct);
+                        variant.setSize(sizeRepository.findById(sizeId).orElseThrow());
+                        managedProduct.getVariants().add(variant);
+                    }
                     variant.setPrice(price);
-                    variant.setSize(sizeRepository.findById(currentSizeId).orElseThrow());
                     variant.setActive(true);
-                    variantRepository.save(variant);
-                } else if (variant.getVariantId() != 0) {
+                } else if (variant != null) {
                     variant.setActive(false);
-                    variantRepository.save(variant);
                 }
             }
         }
+
+        productRepository.save(managedProduct);
     }
 
     @Override
