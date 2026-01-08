@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const csrfInput = document.getElementById('csrfToken');
             const csrfToken = csrfInput ? csrfInput.value : '';
-            
+
             const formData = new FormData();
             if (csrfInput) {
                 formData.append(csrfInput.name, csrfToken);

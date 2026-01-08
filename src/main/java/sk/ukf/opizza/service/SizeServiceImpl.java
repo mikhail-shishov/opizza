@@ -14,7 +14,7 @@ public class SizeServiceImpl implements SizeService {
 
     @Override
     public List<Size> getAllSizes() {
-        return sizeRepository.findAll();
+        return sizeRepository.findAllByOrderByWeightGramsAsc();
     }
 
     @Override
