@@ -5,6 +5,7 @@ import java.util.List;
 
 public interface PizzaService {
     List<Product> getAllActivePizzas();
+    List<Product> getAllPizzas();
     List<Product> searchPizzas(String query);
     List<Product> getPizzasByCategory(int categoryId);
     Product getPizzaById(int id);

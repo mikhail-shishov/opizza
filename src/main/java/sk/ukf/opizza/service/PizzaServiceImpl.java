@@ -162,4 +162,9 @@ public class PizzaServiceImpl implements PizzaService {
     public Product getPizzaBySlug(String slug) {
         return productRepository.findBySlugWithVariants(slug).orElse(null);
     }
+
+    @Override
+    public List<Product> getAllPizzas() {
+        return productRepository.findAll();
+    }
 }

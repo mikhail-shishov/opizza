@@ -11,7 +11,13 @@
     <div class="grid grid-cols-1 gap-4">
         <div th:each="p : ${products}" class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <img th:src="${p.mainImageUrl}" class="w-12 h-12 rounded object-cover" alt="pizza">
+                <div class="relative">
+                    <img th:src="${p.mainImageUrl}" class="w-12 h-12 rounded object-cover" alt="pizza">
+                    <span th:if="${!p.available}"
+                          class="absolute -top-2 -left-2 bg-gray-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">
+                        Neaktívny
+                    </span>
+                </div>
                 <div>
                     <h3 class="font-bold" th:text="${p.name}">Názov</h3>
                     <p class="text-xs text-gray-400" th:text="${p.category?.name}">Kategória</p>

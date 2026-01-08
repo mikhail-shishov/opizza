@@ -51,7 +51,7 @@ public class AdminController {
 
     @GetMapping("/products")
     public String listProducts(Model model) {
-        model.addAttribute("products", pizzaService.getAllActivePizzas());
+        model.addAttribute("products", pizzaService.getAllPizzas());
         return "admin/products-list";
     }
 
