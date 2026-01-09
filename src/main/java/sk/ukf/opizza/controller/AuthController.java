@@ -86,10 +86,11 @@ public class AuthController {
     public String processForgotPassword(@RequestParam("email") String email) {
         try {
             String cleanEmail = email.trim();
-            userService.createPasswordResetToken(email);
+            userService.createPasswordResetToken(cleanEmail);
             return "redirect:/auth/login?sent";
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("Password reset error " + e.getMessage());
             return "redirect:/auth/forgot-password?error";
         }
     }

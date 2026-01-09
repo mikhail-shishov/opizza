@@ -24,10 +24,11 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    @NotBlank(message = "Heslo je povinné")
+    @NotBlank(message = "Heslo je povinné", groups = OnCreate.class)
     @Pattern(
             regexp = "^(?=.*[A-Z])(?=.*\\d).{8,}$",
-            message = "Heslo musí mať aspoň 8 znakov, jedno veľké písmeno a jedno číslo"
+            message = "Heslo musí mať aspoň 8 znakov, jedno veľké písmeno a jedno číslo",
+            groups = OnCreate.class
     )
     private String password;
 
