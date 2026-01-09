@@ -35,6 +35,17 @@
                 <input type="hidden" name="tagData" id="tagData">
             </div>
 
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2">Ingrediencie:</label>
+                <div class="flex flex-wrap gap-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div th:each="ing : ${allIngredients}" class="flex items-center">
+                        <input type="checkbox" name="ingredientIds" th:value="${ing.id}" class="mr-1"
+                               th:checked="${product.ingredients != null ? #lists.toList(product.ingredients).contains(ing) : false}">
+                        <span th:text="${ing.name}" class="text-sm">Ingredient</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="mb-6">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Varianty a ceny:</label>
                 <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">

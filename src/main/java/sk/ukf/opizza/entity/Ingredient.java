@@ -10,23 +10,28 @@ public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ingredient_id")
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, length = 50)
     private String name;
 
-    private boolean isSpicy;
-    private Boolean isFish;
-    private Boolean isMeat;
+    @Column(name = "is_spicy")
+    private Boolean isSpicy = false;
+
+    @Column(name = "is_fish")
+    private Boolean isFish = false;
+
+    @Column(name = "is_meat")
+    private Boolean isMeat = false;
 
     @ManyToMany(mappedBy = "ingredients")
     private List<Product> products;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -38,28 +43,28 @@ public class Ingredient {
         this.name = name;
     }
 
-    public boolean isSpicy() {
+    public Boolean getIsSpicy() {
         return isSpicy;
     }
 
-    public void setSpicy(boolean spicy) {
-        isSpicy = spicy;
+    public void setIsSpicy(Boolean isSpicy) {
+        this.isSpicy = isSpicy;
     }
 
-    public Boolean getFish() {
+    public Boolean getIsFish() {
         return isFish;
     }
 
-    public void setFish(Boolean fish) {
-        isFish = fish;
+    public void setIsFish(Boolean isFish) {
+        this.isFish = isFish;
     }
 
-    public Boolean getMeat() {
+    public Boolean getIsMeat() {
         return isMeat;
     }
 
-    public void setMeat(Boolean meat) {
-        isMeat = meat;
+    public void setIsMeat(Boolean isMeat) {
+        this.isMeat = isMeat;
     }
 
     public List<Product> getProducts() {

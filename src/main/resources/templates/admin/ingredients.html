@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Správa ingrediencií</h1>
+
+        <form th:action="@{/admin/ingredients/save}" method="post" class="bg-white p-6 rounded-xl shadow mb-8">
+            <input type="hidden" name="id" id="ingId">
+
+            <div class="flex gap-4 items-end">
+                <div class="flex-grow">
+                    <label class="block text-sm font-bold mb-1">Názov</label>
+                    <input type="text" name="name" id="ingName" required class="w-full border rounded-lg px-4 py-2">
+                </div>
+
+                <label class="flex items-center gap-1 mb-3">
+                    <input type="checkbox" name="isSpicy" id="ingSpicy"> Pikantné
+                </label>
+                <label class="flex items-center gap-1 mb-3">
+                    <input type="checkbox" name="isMeat" id="ingMeat"> Mäso
+                </label>
+                <label class="flex items-center gap-1 mb-3">
+                    <input type="checkbox" name="isFish" id="ingFish"> Ryba
+                </label>
+
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Uložiť</button>
+            </div>
+        </form>
+
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50">
+                <tr><th class="p-4">Názov</th><th class="p-4">Vlastnosti</th><th class="p-4 text-right">Akcie</th></tr>
+                </thead>
+                <tr th:each="i : ${ingredients}" class="border-b">
+                    <td class="p-4 font-medium" th:text="${i.name}"></td>
+                    <td class="p-4">
+                        <span th:if="${i.isSpicy}" class="text-red-500 mr-2">🔥 Pikantné</span>
+                        <span th:if="${i.isMeat}" class="text-amber-700 mr-2">🥩 Mäso</span>
+                        <span th:if="${i.isFish}" class="text-blue-500">🐟 Ryba</span>
+                    </td>
+                    <td class="p-4 text-right flex justify-end gap-3">
+                        <button type="button" class="text-blue-600 hover:underline"
+                                th:onclick="editIng([[${i.id}]], [[${i.name}]], [[${i.isSpicy}]], [[${i.isMeat}]], [[${i.isFish}]])">Upraviť</button>
+                        <form th:action="@{'/admin/ingredients/delete/' + ${i.id}}" method="post">
+                            <button class="text-red-600 hover:underline">Odstrániť</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        function editIng(id, name, spicy, meat, fish) {
+            document.getElementById('ingId').value = id;
+            document.getElementById('ingName').value = name;
+            document.getElementById('ingSpicy').checked = spicy;
+            document.getElementById('ingMeat').checked = meat;
+            document.getElementById('ingFish').checked = fish;
+        }
+    </script>
+</div>
+</html>

@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sk.ukf.opizza.dao.ProductVariantRepository;
+import sk.ukf.opizza.dao.IngredientRepository;
 import sk.ukf.opizza.entity.*;
 import sk.ukf.opizza.service.*;
 
@@ -25,15 +26,17 @@ public class AdminController {
     private final CategoryService categoryService;
     private final TagService tagService;
     private final SizeService sizeService;
+    private final IngredientService ingredientService;
     private final ProductVariantRepository variantRepository;
 
     @Autowired
-    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService, TagService tagService, SizeService sizeService, ProductVariantRepository variantRepository) {
+    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService, TagService tagService, SizeService sizeService, IngredientService ingredientService, ProductVariantRepository variantRepository) {
         this.orderService = orderService;
         this.pizzaService = pizzaService;
         this.categoryService = categoryService;
         this.tagService = tagService;
         this.sizeService = sizeService;
+        this.ingredientService = ingredientService;
         this.variantRepository = variantRepository;
     }
 
@@ -61,6 +64,7 @@ public class AdminController {
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("allTags", tagService.getAllTags());
         model.addAttribute("allSizes", sizeService.getAllSizes());
+        model.addAttribute("allIngredients", ingredientService.getAllIngredients());
         return "admin/product-form";
     }
 
@@ -199,6 +203,7 @@ public class AdminController {
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("allTags", tagService.getAllTags());
         model.addAttribute("allSizes", sizeService.getAllSizes());
+        model.addAttribute("allIngredients", ingredientService.getAllIngredients());
         return "admin/product-form";
     }
 
@@ -241,6 +246,31 @@ public class AdminController {
             response.put("success", false);
             response.put("error", "Chyba pri odstraňovaní veľkosti: " + e.getMessage());
             return response;
+        }
+    }
+
+    @Controller
+    @RequestMapping("/admin/ingredients")
+    public class AdminIngredientController {
+        @Autowired
+        private IngredientService ingredientService;
+
+        @GetMapping
+        public String listIngredients(Model model) {
+            model.addAttribute("ingredients", ingredientService.getAllIngredients());
+            return "admin/ingredients";
+        }
+
+        @PostMapping("/save")
+        public String saveIngredient(@ModelAttribute Ingredient ingredient) {
+            ingredientService.saveIngredient(ingredient);
+            return "redirect:/admin/ingredients";
+        }
+
+        @PostMapping("/delete/{id}")
+        public String deleteIngredient(@PathVariable int id) {
+            ingredientService.deleteIngredient(id);
+            return "redirect:/admin/ingredients";
         }
     }
 }

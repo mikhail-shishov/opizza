@@ -7,6 +7,7 @@ import sk.ukf.opizza.dao.ProductRepository;
 import sk.ukf.opizza.dao.ProductVariantRepository;
 import sk.ukf.opizza.dao.SizeRepository;
 import sk.ukf.opizza.dao.TagRepository;
+import sk.ukf.opizza.dao.IngredientRepository;
 import sk.ukf.opizza.entity.*;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class PizzaServiceImpl implements PizzaService {
 
     @Autowired
     private SizeRepository sizeRepository;
+
+    @Autowired
+    private IngredientRepository ingredientRepository;
 
     @Override
     public List<Product> getAllActivePizzas() {
@@ -122,6 +126,15 @@ public class PizzaServiceImpl implements PizzaService {
 
         for (int i = 0; i < managedProduct.getImages().size(); i++) {
             managedProduct.getImages().get(i).setMain(i == mainIndex);
+        }
+
+        if (product.getIngredients() != null) {
+            managedProduct.getIngredients().clear();
+            for (Ingredient detachedIng : product.getIngredients()) {
+                managedProduct.getIngredients().add(ingredientRepository.findById(detachedIng.getId()).orElseThrow());
+            }
+        } else {
+            managedProduct.getIngredients().clear();
         }
 
         if (sizeIds != null && prices != null) {

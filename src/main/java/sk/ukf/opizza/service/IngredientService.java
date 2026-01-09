@@ -5,4 +5,7 @@ import java.util.List;
 
 public interface IngredientService {
     List<Ingredient> getAllIngredients();
+    Ingredient getIngredientById(int id);
+    void saveIngredient(Ingredient ingredient);
+    void deleteIngredient(int id);
 }
