@@ -69,7 +69,7 @@ public class AdminController {
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(@RequestParam("productId") int productId, @RequestParam("name") String name, @RequestParam("category") Integer categoryId, @RequestParam(value = "description", required = false) String description, @RequestParam(value = "slug", required = false) String slug, @RequestParam(value = "available", defaultValue = "false") boolean available, @RequestParam(value = "tagData", required = false) String tagData, @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles, @RequestParam(value = "existingImageIdsData", required = false) String existingImageIdsData, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex, @RequestParam(value = "variantData", required = false) String variantData) {
+    public String saveProduct(@RequestParam("productId") int productId, @RequestParam("name") String name, @RequestParam("category") Integer categoryId, @RequestParam(value = "description", required = false) String description, @RequestParam(value = "slug", required = false) String slug, @RequestParam(value = "available", defaultValue = "false") boolean available, @RequestParam(value = "tagData", required = false) String tagData, @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles, @RequestParam(value = "existingImageIdsData", required = false) String existingImageIdsData, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex, @RequestParam(value = "ingredientIds", required = false) List<Integer> ingredientIds, @RequestParam(value = "variantData", required = false) String variantData) {
 
         List<Integer> existingImageIds = new ArrayList<>();
         if (existingImageIdsData != null && !existingImageIdsData.isEmpty()) {
@@ -125,6 +125,17 @@ public class AdminController {
                 return t;
             }).toList();
             product.setTags(tags);
+        }
+
+        if (ingredientIds != null) {
+            List<Ingredient> ingredients = ingredientIds.stream().map(id -> {
+                Ingredient ing = new Ingredient();
+                ing.setId(id);
+                return ing;
+            }).toList();
+            product.setIngredients(ingredients);
+        } else {
+            product.setIngredients(new ArrayList<>());
         }
 
         List<String> finalUrls = new ArrayList<>();

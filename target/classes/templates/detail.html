@@ -8,10 +8,12 @@
                      class="rounded-xl w-full shadow-lg object-cover aspect-video transition-all duration-300">
 
                 <div th:if="${pizza.images.size() > 1}">
-                    <button type="button" onclick="changeImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md text-gray-800 transition">
+                    <button type="button" onclick="changeImage(-1)"
+                            class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md text-gray-800 transition">
                         <i class="fa fa-chevron-left"></i>
                     </button>
-                    <button type="button" onclick="changeImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md text-gray-800 transition">
+                    <button type="button" onclick="changeImage(1)"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md text-gray-800 transition">
                         <i class="fa fa-chevron-right"></i>
                     </button>
                 </div>
@@ -34,6 +36,23 @@
             <h1 class="text-4xl font-bold mb-4" th:text="${pizza.name}">Názov pizze</h1>
             <p class="text-gray-600 mb-6 text-lg" th:text="${pizza.description}">Popis...</p>
 
+            <div th:if="${not #lists.isEmpty(pizza.ingredients)}" class="mb-6">
+                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Zloženie:</h3>
+                <div class="flex flex-wrap gap-2">
+                <span th:each="ing, iterStat : ${pizza.ingredients}" class="text-gray-700 font-small">
+                    <span th:text="${ing.name}" class="text-sm">Ingredient</span>
+
+                    <i th:if="${ing.isSpicy}" class="fa fa-fire text-red-500 ml-1" title="Pikantné"></i>
+
+                    <i th:if="${ing.isMeat}" class="fa fa-circle text-orange-800 style='font-size: 8px;' ml-1" title="Obsahuje mäso"></i>
+
+                    <i th:if="${ing.isFish}" class="fa fa-anchor text-blue-400 ml-1" title="Obsahuje rybu"></i>
+
+                    <span th:if="${!iterStat.last}" class="mr-1">,</span>
+                </span>
+                </div>
+            </div>
+
             <form th:action="@{/cart/add}" method="post" class="space-y-6">
                 <div>
                     <label class="block text-gray-700 font-bold mb-2 text-lg">Vyberte si veľkosť:</label>
@@ -48,7 +67,8 @@
                             <label th:for="'variant-' + ${variant.variantId}"
                                    class="flex justify-between items-center w-full cursor-pointer">
                                 <span th:text="${variant.size.name}" class="font-medium">Veľkosť</span>
-                                <span class="font-bold text-blue-600" th:text="${#numbers.formatDecimal(variant.price, 1, 2) + ' €'}">0.00 €</span>
+                                <span class="font-bold text-blue-600"
+                                      th:text="${#numbers.formatDecimal(variant.price, 1, 2) + ' €'}">0.00 €</span>
                             </label>
                         </div>
                     </div>
