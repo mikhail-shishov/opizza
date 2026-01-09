@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const container = document.getElementById('pizza-container');
     if (container) {
-        const itemsPerPage = 10;
+        const itemsPerPage = 12;
         const items = Array.from(container.getElementsByClassName('pizza-item'));
         const controls = document.getElementById('pagination-controls');
         let currentPage = 1;

@@ -28,3 +28,7 @@
     min-width: 1.25rem;
     height: 1.25rem;
 }
+
+#main-gallery-image {
+    min-height: 260px;
+}
