@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sk.ukf.opizza.entity.Product;
 import sk.ukf.opizza.service.CategoryService;
 import sk.ukf.opizza.service.PizzaService;
-
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -53,6 +53,10 @@ public class PizzaController {
 
         if (pizza == null) {
             return "redirect:/";
+        }
+
+        if (pizza.getVariants() != null) {
+            pizza.getVariants().sort(Comparator.comparingInt(v -> v.getSize().getWeightGrams()));
         }
 
         model.addAttribute("pizza", pizza);

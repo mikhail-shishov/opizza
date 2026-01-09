@@ -186,7 +186,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle delete size buttons with AJAX
     const deleteSizeButtons = document.querySelectorAll('.delete-size-btn');
     deleteSizeButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -198,15 +197,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = this.closest('.size-row');
             const errorDiv = document.getElementById('error-message');
             const errorText = document.getElementById('error-text');
-            
-            // Hide any previous error
+
             errorDiv.classList.add('hidden');
-            
-            // Get CSRF token from form
+
             const csrfInput = document.getElementById('csrfToken');
             const csrfToken = csrfInput ? csrfInput.value : '';
-            
-            // Create form data for POST request
+
             const formData = new FormData();
             if (csrfInput) {
                 formData.append(csrfInput.name, csrfToken);
@@ -222,16 +218,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Remove the row from the table
                     row.remove();
-                    
-                    // Check if table is empty and show message
+
                     const tbody = document.querySelector('tbody');
                     if (tbody && tbody.querySelectorAll('.size-row').length === 0) {
                         tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-gray-400 italic">Neboli nájdené žiadne veľkosti.</td></tr>';
                     }
                 } else {
-                    // Show error message
                     errorText.textContent = data.error || 'Chyba pri odstraňovaní veľkosti.';
                     errorDiv.classList.remove('hidden');
                     errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

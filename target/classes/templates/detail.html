@@ -3,7 +3,31 @@
 <div th:fragment="content">
     <div class="rounded-2xl shadow-lg p-8 flex flex-col md:flex-row gap-10">
         <div class="md:w-1/2">
-            <img th:src="${pizza.mainImageUrl}" class="rounded-xl w-full shadow-lg">
+            <div class="relative group">
+                <img id="main-gallery-image" th:src="${pizza.mainImageUrl}"
+                     class="rounded-xl w-full shadow-lg object-cover aspect-video transition-all duration-300">
+
+                <div th:if="${pizza.images.size() > 1}">
+                    <button type="button" onclick="changeImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md text-gray-800 transition">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button type="button" onclick="changeImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md text-gray-800 transition">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="image-data" class="hidden">
+                <span th:each="img : ${pizza.images}" th:text="${img.url}"></span>
+            </div>
+
+            <div class="flex gap-2 mt-4 overflow-x-auto pb-2">
+                <img th:each="img, iter : ${pizza.images}"
+                     th:src="${img.url}"
+                     th:classappend="${img.isMain} ? 'border-blue-600' : 'border-transparent'"
+                     class="w-20 h-20 object-cover rounded-md cursor-pointer border-2 hover:border-blue-400 thumbnail-img"
+                     th:onclick="'setMainImage(' + ${iter.index} + ')'">
+            </div>
         </div>
 
         <div class="md:w-1/2">
