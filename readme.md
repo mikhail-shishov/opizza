@@ -10,7 +10,7 @@ V root priečinku projekta sú .sql súbory podľa zadania:
 - db_full.sql – kombinovaný súbor obsahujúci vytvorenie DB aj vloženie dát.
 
 
-## Použivateľia:
+## Použivatelia:
 
 test.user@opizza.sk - obyčajný
 
