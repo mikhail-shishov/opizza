@@ -22,7 +22,7 @@ shishovmike96@gmail.com - admin
 
 Heslo ku všetkým použivateľom je A1bcdefg
 
-Ak to nejde kvôli PasswordEncoder, reset hesla funguje na http://localhost:8080/auth/forgot-password. Mail sa odosiela na môj Mailtrap, takže v projekte je **implementácia odoslania mailov**.
+Ak to nejde kvôli PasswordEncoder, reset hesla funguje na http://localhost:8080/auth/forgot-password. Mail sa odosiela na môj Mailtrap, takže v projekte je **implementácia odoslania mailov**. Maily sa odosielajú v prípade zabudnutého hesla, keď použivateľ sa zaregistruje, a keď urobí objednavku.
 
 
 ## Maily:
