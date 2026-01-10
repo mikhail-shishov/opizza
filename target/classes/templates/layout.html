@@ -66,7 +66,7 @@
                     <span>História</span>
                 </a>
                 <a th:href="@{/profile}" class="font-semibold text-gray-600">
-                    <span th:if="${#authentication.principal instanceof T(sk.ukf.opizza.config.UserPrincipal)}" th:text="${#authentication.principal.firstName}">Meno</span>
+                    Profil (<span th:text="${#authentication.principal.firstName}">Meno</span>)
                 </a>
                 <form th:action="@{/logout}" method="post" class="inline">
                     <button type="submit" class="text-sm px-3 py-1 rounded-full text-blue-600">Odhlásiť</button>
