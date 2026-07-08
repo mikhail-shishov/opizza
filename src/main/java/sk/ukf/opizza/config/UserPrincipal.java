@@ -7,7 +7,6 @@ import sk.ukf.opizza.entity.User;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 // logged in user, in session
 public class UserPrincipal implements UserDetails {

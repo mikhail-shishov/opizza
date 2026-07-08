@@ -22,7 +22,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Optional<Product> findBySlug(String slug);
 
-    @Query("SELECT p FROM Product p " + "LEFT JOIN FETCH p.variants v " + "LEFT JOIN FETCH v.size " + "WHERE p.slug = :slug AND (v IS NULL OR v.isActive = true)")
+    @Query("SELECT p FROM Product p " + "LEFT JOIN FETCH p.variants v " + "LEFT JOIN FETCH v.size "
+            + "WHERE p.slug = :slug AND (v IS NULL OR v.isActive = true)")
     Optional<Product> findBySlugWithVariants(@Param("slug") String slug);
 
     @Query("SELECT p FROM Product p JOIN p.tags t WHERE t.id = :tagId")

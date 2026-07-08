@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sk.ukf.opizza.dao.ProductVariantRepository;
-import sk.ukf.opizza.dao.IngredientRepository;
+// import sk.ukf.opizza.dao.IngredientRepository;
 import sk.ukf.opizza.entity.*;
 import sk.ukf.opizza.service.*;
 
@@ -30,7 +30,9 @@ public class AdminController {
     private final ProductVariantRepository variantRepository;
 
     @Autowired
-    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService, TagService tagService, SizeService sizeService, IngredientService ingredientService, ProductVariantRepository variantRepository) {
+    public AdminController(OrderService orderService, PizzaService pizzaService, CategoryService categoryService,
+            TagService tagService, SizeService sizeService, IngredientService ingredientService,
+            ProductVariantRepository variantRepository) {
         this.orderService = orderService;
         this.pizzaService = pizzaService;
         this.categoryService = categoryService;
@@ -69,7 +71,17 @@ public class AdminController {
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(@RequestParam("productId") int productId, @RequestParam("name") String name, @RequestParam("category") Integer categoryId, @RequestParam(value = "description", required = false) String description, @RequestParam(value = "slug", required = false) String slug, @RequestParam(value = "available", defaultValue = "false") boolean available, @RequestParam(value = "tagData", required = false) String tagData, @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles, @RequestParam(value = "existingImageIdsData", required = false) String existingImageIdsData, @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex, @RequestParam(value = "ingredientIds", required = false) List<Integer> ingredientIds, @RequestParam(value = "variantData", required = false) String variantData) {
+    public String saveProduct(@RequestParam("productId") int productId, @RequestParam("name") String name,
+            @RequestParam("category") Integer categoryId,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "slug", required = false) String slug,
+            @RequestParam(value = "available", defaultValue = "false") boolean available,
+            @RequestParam(value = "tagData", required = false) String tagData,
+            @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles,
+            @RequestParam(value = "existingImageIdsData", required = false) String existingImageIdsData,
+            @RequestParam(value = "mainImageIndex", defaultValue = "0") int mainIndex,
+            @RequestParam(value = "ingredientIds", required = false) List<Integer> ingredientIds,
+            @RequestParam(value = "variantData", required = false) String variantData) {
 
         List<Integer> existingImageIds = new ArrayList<>();
         if (existingImageIdsData != null && !existingImageIdsData.isEmpty()) {
@@ -143,9 +155,11 @@ public class AdminController {
             for (MultipartFile file : imageFiles) {
                 if (!file.isEmpty()) {
                     try {
-                        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
+                        String fileName = System.currentTimeMillis() + "_"
+                                + file.getOriginalFilename().replaceAll("\\s+", "_");
                         Path uploadPath = Paths.get("user-pics", "products");
-                        if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+                        if (!Files.exists(uploadPath))
+                            Files.createDirectories(uploadPath);
                         Files.write(uploadPath.resolve(fileName), file.getBytes());
                         finalUrls.add("/uploads/products/" + fileName);
                     } catch (IOException e) {
@@ -193,7 +207,8 @@ public class AdminController {
     }
 
     @PostMapping("/tags/save")
-    public String saveTag(@RequestParam(required = false) Integer id, @RequestParam String name, @RequestParam(required = false) String colorHex) {
+    public String saveTag(@RequestParam(required = false) Integer id, @RequestParam String name,
+            @RequestParam(required = false) String colorHex) {
         Tag tag = (id != null) ? tagService.getTagById(id) : new Tag();
         tag.setName(name);
         tag.setColorHex(colorHex != null ? colorHex : "#808080");
@@ -225,7 +240,8 @@ public class AdminController {
     }
 
     @PostMapping("/sizes/save")
-    public String saveSize(@RequestParam(required = false) Integer id, @RequestParam String name, @RequestParam int weightGrams) {
+    public String saveSize(@RequestParam(required = false) Integer id, @RequestParam String name,
+            @RequestParam int weightGrams) {
         Size size = (id != null) ? sizeService.getSizeById(id) : new Size();
         size.setName(name);
         size.setWeightGrams(weightGrams);
@@ -234,9 +250,13 @@ public class AdminController {
     }
 
     private String generateSlug(String name) {
-        if (name == null || name.isEmpty()) return "";
+        if (name == null || name.isEmpty())
+            return "";
 
-        return name.toLowerCase().replace('ľ', 'l').replace('š', 's').replace('č', 'c').replace('ť', 't').replace('ž', 'z').replace('ý', 'y').replace('á', 'a').replace('í', 'i').replace('é', 'e').replace('ď', 'd').replace('ň', 'n').replace('ó', 'o').replace('ô', 'o').replace('ŕ', 'r').replace('ĺ', 'l').replaceAll("[^a-z0-9\\s]", "").replaceAll("\\s+", "-").replaceAll("-+", "-").trim();
+        return name.toLowerCase().replace('ľ', 'l').replace('š', 's').replace('č', 'c').replace('ť', 't')
+                .replace('ž', 'z').replace('ý', 'y').replace('á', 'a').replace('í', 'i').replace('é', 'e')
+                .replace('ď', 'd').replace('ň', 'n').replace('ó', 'o').replace('ô', 'o').replace('ŕ', 'r')
+                .replace('ĺ', 'l').replaceAll("[^a-z0-9\\s]", "").replaceAll("\\s+", "-").replaceAll("-+", "-").trim();
     }
 
     @PostMapping("/sizes/delete/{id}")

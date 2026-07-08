@@ -1,7 +1,7 @@
 package sk.ukf.opizza.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
+// import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
