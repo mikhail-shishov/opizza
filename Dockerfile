@@ -1,4 +1,4 @@
-FROM maven:3.9.16-eclipse-temurin-17 AS builder
+FROM maven:3.9.16-eclipse-temurin-25-alpine AS builder
 WORKDIR /build
 
 COPY pom.xml .
